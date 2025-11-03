@@ -193,12 +193,12 @@ class GatewayManager:
         except Exception as e:
             return {"success": False, "message": str(e)}
             
-    async def test_locrypt_connection(self) -> Dict[str, Any]:
-        """Test LoCrypt connection"""
-        if not self.locrypt_client:
-            return {"success": False, "message": "LoCrypt not configured"}
+    async def test_darcy_connection(self) -> Dict[str, Any]:
+        """Test Darcy connection"""
+        if not self.darcy_client:
+            return {"success": False, "message": "Darcy not configured"}
             
-        return await self.locrypt_client.test_connection()
+        return await self.darcy_client.test_connection()
         
     def get_status(self) -> Dict[str, Any]:
         """Get current gateway status"""
