@@ -217,6 +217,8 @@ class MockRadarConnector(RadarConnector):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
         self.detection_count = 0
+        self.targets = []
+        self.last_update = datetime.utcnow()
         
     async def connect(self) -> bool:
         self.is_connected = True
@@ -230,21 +232,70 @@ class MockRadarConnector(RadarConnector):
     async def read_data(self) -> Optional[Dict[str, Any]]:
         import random
         
-        await asyncio.sleep(random.uniform(3, 8))  # Random interval
+        await asyncio.sleep(random.uniform(1, 3))  # Faster updates
         
-        # Simulate detection event
-        if random.random() < 0.3:  # 30% chance of detection
-            self.detection_count += 1
+        # Always generate data for visualization
+        self.detection_count += random.randint(0, 2)
+        
+        # Generate 1-3 targets
+        num_targets = random.randint(0, 3)
+        targets = []
+        
+        for i in range(num_targets):
             bearing = random.randint(0, 359)
-            range_km = round(random.uniform(0.5, 10.0), 2)
-            altitude = random.randint(50, 500)
-            speed = random.randint(20, 150)
+            range_km = round(random.uniform(0.5, 45.0), 2)
+            altitude = random.randint(50, 800)
+            speed = random.randint(20, 180)
             
-            # Generate NMEA-like sentence
-            nmea_sentence = f"$GPGGA,123519,{bearing:03d}.00,N,{range_km:.2f},E,1,08,{altitude},{speed}.0,M,46.9,M,,*47"
+            targets.append({
+                'id': f'TGT-{self.detection_count + i:03d}',
+                'type': 'DRONE',
+                'range': f'{range_km}km',
+                'bearing': f'{bearing:03d}°',
+                'altitude': f'{altitude}m',
+                'speed': f'{speed}kts',
+                'latitude': round(34.0522 + random.uniform(-0.5, 0.5), 4),
+                'longitude': round(-118.2437 + random.uniform(-0.5, 0.5), 4)
+            })
+        
+        if num_targets > 0:
+            # Use first target as main detection
+            main_target = targets[0]
+            signal_strength = random.randint(60, 95)
+            confidence = 'HIGH' if signal_strength > 80 else 'MEDIUM' if signal_strength > 60 else 'LOW'
             
             return {
-                'raw_data': nmea_sentence,
+                'raw_data': json.dumps({
+                    'detections': num_targets,
+                    'range': main_target['range'],
+                    'bearing': main_target['bearing'],
+                    'altitude': main_target['altitude'],
+                    'speed': main_target['speed'],
+                    'confidence': confidence,
+                    'signalStrength': signal_strength,
+                    'latitude': main_target['latitude'],
+                    'longitude': main_target['longitude'],
+                    'targets': targets
+                }),
+                'source': 'mock',
+                'timestamp': datetime.utcnow().isoformat(),
+                'detection_count': self.detection_count
+            }
+        else:
+            # No targets but still send telemetry
+            return {
+                'raw_data': json.dumps({
+                    'detections': 0,
+                    'range': '0km',
+                    'bearing': '000°',
+                    'altitude': '0m',
+                    'speed': '0kts',
+                    'confidence': 'LOW',
+                    'signalStrength': random.randint(30, 50),
+                    'latitude': 34.0522,
+                    'longitude': -118.2437,
+                    'targets': []
+                }),
                 'source': 'mock',
                 'timestamp': datetime.utcnow().isoformat(),
                 'detection_count': self.detection_count
