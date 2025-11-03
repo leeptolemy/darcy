@@ -6,6 +6,22 @@ import '@/App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 const API = `${BACKEND_URL}/api`;
 
+// Darcy Brand Colors (from logo)
+const DARCY_COLORS = {
+  primary: '#1A2B47',      // Dark Navy Blue
+  secondary: '#2A3F5F',    // Lighter Navy
+  accent: '#3D5A80',       // Blue accent
+  background: '#0F1419',   // Very dark background
+  surface: '#1A2332',      // Surface dark
+  border: '#2A3F5F',       // Border color
+  text: '#F8F7F3',         // Off-white text
+  textMuted: '#B8C5D6',    // Muted text
+  success: '#4A9B8E',      // Teal green
+  warning: '#D4A574',      // Gold
+  error: '#C74444',        // Red
+  info: '#5B8DBE'          // Light blue
+};
+
 function App() {
   const [activeView, setActiveView] = useState('dashboard');
   const [status, setStatus] = useState(null);
@@ -22,7 +38,7 @@ function App() {
       if (activeView === 'dashboard') {
         fetchStatus();
       }
-    }, 3000); // Refresh every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [activeView]);
@@ -112,17 +128,17 @@ function App() {
     setLoading(false);
   };
 
-  const testLoCrypt = async () => {
+  const testDarcy = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/gateway/test-locrypt`);
+      const response = await axios.post(`${API}/gateway/test-darcy`);
       if (response.data.success) {
-        showNotification('LoCrypt Test Passed', response.data.message);
+        showNotification('Darcy Test Passed', response.data.message);
       } else {
-        showNotification('LoCrypt Test Failed', response.data.message);
+        showNotification('Darcy Test Failed', response.data.message);
       }
     } catch (error) {
-      showNotification('Error', 'LoCrypt test failed');
+      showNotification('Error', 'Darcy test failed');
     }
     setLoading(false);
   };
@@ -148,10 +164,10 @@ function App() {
   };
 
   const getStatusColor = () => {
-    if (!status) return 'bg-gray-500';
-    if (status.is_running && status.radar_status === 'monitoring') return 'bg-green-500';
-    if (status.is_running) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (!status) return DARCY_COLORS.textMuted;
+    if (status.is_running && status.radar_status === 'monitoring') return DARCY_COLORS.success;
+    if (status.is_running) return DARCY_COLORS.warning;
+    return DARCY_COLORS.error;
   };
 
   const getStatusText = () => {
@@ -162,23 +178,37 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100">
+    <div className="flex h-screen" style={{ backgroundColor: DARCY_COLORS.background, color: DARCY_COLORS.text }}>
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 border-r border-gray-700">
-        <div className="p-4 border-b border-gray-700">
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Radio className="text-blue-500" />
-            Radar Gateway
-          </h1>
-          <p className="text-xs text-gray-400 mt-1">Drone Detection System</p>
+      <div className="w-64" style={{ backgroundColor: DARCY_COLORS.primary, borderRight: `1px solid ${DARCY_COLORS.border}` }}>
+        <div className="p-4" style={{ borderBottom: `1px solid ${DARCY_COLORS.border}` }}>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: DARCY_COLORS.accent }}>
+              <Radio size={24} style={{ color: DARCY_COLORS.text }} />
+            </div>
+            <h1 className="text-xl font-bold">Darcy</h1>
+          </div>
+          <p className="text-xs" style={{ color: DARCY_COLORS.textMuted }}>Drone Detection Gateway</p>
         </div>
 
         <nav className="p-4 space-y-2">
           <button
             onClick={() => setActiveView('dashboard')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              activeView === 'dashboard' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'
-            }`}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all"
+            style={{
+              backgroundColor: activeView === 'dashboard' ? DARCY_COLORS.accent : 'transparent',
+              color: DARCY_COLORS.text
+            }}
+            onMouseEnter={(e) => {
+              if (activeView !== 'dashboard') {
+                e.target.style.backgroundColor = DARCY_COLORS.secondary;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeView !== 'dashboard') {
+                e.target.style.backgroundColor = 'transparent';
+              }
+            }}
             data-testid="nav-dashboard"
           >
             <Activity size={20} />
@@ -187,9 +217,21 @@ function App() {
 
           <button
             onClick={() => setActiveView('config')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              activeView === 'config' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'
-            }`}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all"
+            style={{
+              backgroundColor: activeView === 'config' ? DARCY_COLORS.accent : 'transparent',
+              color: DARCY_COLORS.text
+            }}
+            onMouseEnter={(e) => {
+              if (activeView !== 'config') {
+                e.target.style.backgroundColor = DARCY_COLORS.secondary;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeView !== 'config') {
+                e.target.style.backgroundColor = 'transparent';
+              }
+            }}
             data-testid="nav-config"
           >
             <Settings size={20} />
@@ -198,9 +240,21 @@ function App() {
 
           <button
             onClick={() => setActiveView('logs')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              activeView === 'logs' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'
-            }`}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all"
+            style={{
+              backgroundColor: activeView === 'logs' ? DARCY_COLORS.accent : 'transparent',
+              color: DARCY_COLORS.text
+            }}
+            onMouseEnter={(e) => {
+              if (activeView !== 'logs') {
+                e.target.style.backgroundColor = DARCY_COLORS.secondary;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeView !== 'logs') {
+                e.target.style.backgroundColor = 'transparent';
+              }
+            }}
             data-testid="nav-logs"
           >
             <FileText size={20} />
@@ -221,7 +275,8 @@ function App() {
             stopGateway={stopGateway}
             manualPublish={manualPublish}
             testRadar={testRadar}
-            testLoCrypt={testLoCrypt}
+            testDarcy={testDarcy}
+            colors={DARCY_COLORS}
           />
         )}
 
@@ -231,84 +286,87 @@ function App() {
             loading={loading}
             saveConfig={saveConfig}
             testRadar={testRadar}
-            testLoCrypt={testLoCrypt}
+            testDarcy={testDarcy}
+            colors={DARCY_COLORS}
           />
         )}
 
-        {activeView === 'logs' && <LogsView logs={logs} fetchLogs={fetchLogs} />}
+        {activeView === 'logs' && <LogsView logs={logs} fetchLogs={fetchLogs} colors={DARCY_COLORS} />}
       </div>
     </div>
   );
 }
 
-function Dashboard({ status, loading, getStatusColor, getStatusText, startGateway, stopGateway, manualPublish, testRadar, testLoCrypt }) {
+function Dashboard({ status, loading, getStatusColor, getStatusText, startGateway, stopGateway, manualPublish, testRadar, testDarcy, colors }) {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h2 className="text-3xl font-bold mb-2">Radar Gateway Dashboard</h2>
-        <p className="text-gray-400">Real-time monitoring and control</p>
+        <h2 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>Radar Gateway Dashboard</h2>
+        <p style={{ color: colors.textMuted }}>Real-time monitoring and control</p>
       </div>
 
       {/* Status Header */}
       <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-400">Gateway Status</span>
-            <div className={`w-3 h-3 rounded-full ${getStatusColor()} animate-pulse`}></div>
+            <span style={{ color: colors.textMuted }}>Gateway Status</span>
+            <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: getStatusColor() }}></div>
           </div>
-          <p className="text-2xl font-bold" data-testid="gateway-status">{getStatusText()}</p>
+          <p className="text-2xl font-bold" data-testid="gateway-status" style={{ color: colors.text }}>{getStatusText()}</p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-400">Radar Status</span>
+            <span style={{ color: colors.textMuted }}>Radar Status</span>
             {status?.radar_status === 'monitoring' ? (
-              <CheckCircle className="text-green-500" size={20} />
+              <CheckCircle style={{ color: colors.success }} size={20} />
             ) : (
-              <AlertCircle className="text-red-500" size={20} />
+              <AlertCircle style={{ color: colors.error }} size={20} />
             )}
           </div>
-          <p className="text-2xl font-bold capitalize" data-testid="radar-status">
+          <p className="text-2xl font-bold capitalize" data-testid="radar-status" style={{ color: colors.text }}>
             {status?.radar_status || 'Unknown'}
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-400">LoCrypt</span>
-            {status?.locrypt_connected ? (
-              <Cloud className="text-blue-500" size={20} />
+            <span style={{ color: colors.textMuted }}>Darcy</span>
+            {status?.darcy_connected ? (
+              <Cloud style={{ color: colors.info }} size={20} />
             ) : (
-              <AlertCircle className="text-yellow-500" size={20} />
+              <AlertCircle style={{ color: colors.warning }} size={20} />
             )}
           </div>
-          <p className="text-2xl font-bold">
-            {status?.locrypt_connected ? 'Connected' : 'Not Configured'}
+          <p className="text-2xl font-bold" style={{ color: colors.text }}>
+            {status?.darcy_connected ? 'Connected' : 'Not Configured'}
           </p>
         </div>
       </div>
 
       {/* Statistics */}
       <div className="grid grid-cols-4 gap-6 mb-8">
-        <StatCard title="Detections" value={status?.stats?.detections_total || 0} />
-        <StatCard title="Published" value={status?.stats?.published_total || 0} />
-        <StatCard title="Errors" value={status?.stats?.errors_total || 0} color="text-red-400" />
+        <StatCard title="Detections" value={status?.stats?.detections_total || 0} colors={colors} />
+        <StatCard title="Published" value={status?.stats?.published_total || 0} colors={colors} />
+        <StatCard title="Errors" value={status?.stats?.errors_total || 0} colors={colors} valueColor={colors.error} />
         <StatCard
           title="Uptime"
           value={status?.uptime ? formatUptime(status.uptime) : 'N/A'}
           isText
+          colors={colors}
         />
       </div>
 
       {/* Controls */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-8">
-        <h3 className="text-lg font-semibold mb-4">Gateway Controls</h3>
-        <div className="flex gap-4">
+      <div className="rounded-lg p-6 mb-8" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text }}>Gateway Controls</h3>
+        <div className="flex gap-4 flex-wrap">
           {!status?.is_running ? (
             <button
               onClick={startGateway}
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              style={{ backgroundColor: colors.success, color: colors.text }}
               data-testid="start-button"
             >
               <PlayCircle size={20} />
@@ -318,7 +376,8 @@ function Dashboard({ status, loading, getStatusColor, getStatusText, startGatewa
             <button
               onClick={stopGateway}
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              style={{ backgroundColor: colors.error, color: colors.text }}
               data-testid="stop-button"
             >
               <StopCircle size={20} />
@@ -329,7 +388,8 @@ function Dashboard({ status, loading, getStatusColor, getStatusText, startGatewa
           <button
             onClick={manualPublish}
             disabled={loading || !status?.is_running}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            style={{ backgroundColor: colors.info, color: colors.text }}
             data-testid="manual-publish-button"
           >
             <Send size={20} />
@@ -339,38 +399,41 @@ function Dashboard({ status, loading, getStatusColor, getStatusText, startGatewa
           <button
             onClick={testRadar}
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            style={{ backgroundColor: colors.secondary, color: colors.text }}
             data-testid="test-radar-button"
           >
             Test Radar
           </button>
 
           <button
-            onClick={testLoCrypt}
+            onClick={testDarcy}
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            data-testid="test-locrypt-button"
+            className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            style={{ backgroundColor: colors.secondary, color: colors.text }}
+            data-testid="test-darcy-button"
           >
-            Test LoCrypt
+            Test Darcy
           </button>
         </div>
       </div>
 
       {/* Last Detection */}
       {status?.last_published_data && (
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold mb-4">Last Published Data</h3>
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
+          <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text }}>Last Published Data</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <DataField label="Detections" value={status.last_published_data.detections} />
-            <DataField label="Range" value={status.last_published_data.range} />
-            <DataField label="Bearing" value={status.last_published_data.bearing} />
-            <DataField label="Altitude" value={status.last_published_data.altitude} />
-            <DataField label="Speed" value={status.last_published_data.speed} />
-            <DataField label="Confidence" value={status.last_published_data.confidence} />
-            <DataField label="Signal" value={`${status.last_published_data.signalStrength}%`} />
+            <DataField label="Detections" value={status.last_published_data.detections} colors={colors} />
+            <DataField label="Range" value={status.last_published_data.range} colors={colors} />
+            <DataField label="Bearing" value={status.last_published_data.bearing} colors={colors} />
+            <DataField label="Altitude" value={status.last_published_data.altitude} colors={colors} />
+            <DataField label="Speed" value={status.last_published_data.speed} colors={colors} />
+            <DataField label="Confidence" value={status.last_published_data.confidence} colors={colors} />
+            <DataField label="Signal" value={`${status.last_published_data.signalStrength}%`} colors={colors} />
             <DataField
               label="Time"
               value={new Date(status.last_published_data.timestamp).toLocaleTimeString()}
+              colors={colors}
             />
           </div>
         </div>
@@ -379,7 +442,7 @@ function Dashboard({ status, loading, getStatusColor, getStatusText, startGatewa
   );
 }
 
-function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) {
+function Configuration({ config, loading, saveConfig, testRadar, testDarcy, colors }) {
   const [localConfig, setLocalConfig] = useState(config);
 
   useEffect(() => {
@@ -406,7 +469,7 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
   if (!localConfig) {
     return (
       <div className="p-8">
-        <p>Loading configuration...</p>
+        <p style={{ color: colors.text }}>Loading configuration...</p>
       </div>
     );
   }
@@ -414,47 +477,59 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h2 className="text-3xl font-bold mb-2">Configuration</h2>
-        <p className="text-gray-400">Configure radar and LoCrypt settings</p>
+        <h2 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>Configuration</h2>
+        <p style={{ color: colors.textMuted }}>Configure radar and Darcy gateway settings</p>
       </div>
 
       <div className="space-y-6">
-        {/* LoCrypt Settings */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Cloud size={20} className="text-blue-500" />
-            LoCrypt Gateway Settings
+        {/* Darcy Settings */}
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: colors.text }}>
+            <Cloud size={20} style={{ color: colors.info }} />
+            Darcy Gateway Settings
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Backend URL</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Backend URL</label>
               <input
                 type="text"
-                value={localConfig.locrypt?.backend_url || ''}
-                onChange={(e) => updateNestedValue('locrypt.backend_url', e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="https://api.locrypt.example.com"
-                data-testid="locrypt-url-input"
+                value={localConfig.darcy?.backend_url || ''}
+                onChange={(e) => updateNestedValue('darcy.backend_url', e.target.value)}
+                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:outline-none"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  color: colors.text,
+                  '--tw-ring-color': colors.accent
+                }}
+                placeholder="https://api.darcy.example.com"
+                data-testid="darcy-url-input"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Gateway Token</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Gateway Token</label>
               <input
                 type="password"
-                value={localConfig.locrypt?.gateway_token || ''}
-                onChange={(e) => updateNestedValue('locrypt.gateway_token', e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                value={localConfig.darcy?.gateway_token || ''}
+                onChange={(e) => updateNestedValue('darcy.gateway_token', e.target.value)}
+                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:outline-none"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  color: colors.text
+                }}
                 placeholder="Enter gateway token"
                 data-testid="gateway-token-input"
               />
             </div>
 
             <button
-              onClick={testLoCrypt}
+              onClick={testDarcy}
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium disabled:opacity-50 transition-colors"
+              className="px-4 py-2 rounded-lg font-medium disabled:opacity-50 transition-all"
+              style={{ backgroundColor: colors.info, color: colors.text }}
             >
               Test Connection
             </button>
@@ -462,19 +537,24 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
         </div>
 
         {/* Radar Settings */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Radio size={20} className="text-green-500" />
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: colors.text }}>
+            <Radio size={20} style={{ color: colors.success }} />
             Radar Settings
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Radar Type</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Radar Type</label>
               <select
                 value={localConfig.radar?.type || 'mock'}
                 onChange={(e) => updateNestedValue('radar.type', e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:outline-none"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  color: colors.text
+                }}
                 data-testid="radar-type-select"
               >
                 <option value="mock">Mock (Testing)</option>
@@ -487,22 +567,32 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
             {localConfig.radar?.type === 'serial' && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Serial Port</label>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Serial Port</label>
                   <input
                     type="text"
                     value={localConfig.radar?.connection?.port || ''}
                     onChange={(e) => updateNestedValue('radar.connection.port', e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: colors.background,
+                      border: `1px solid ${colors.border}`,
+                      color: colors.text
+                    }}
                     placeholder="/dev/ttyUSB0 or COM3"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Baud Rate</label>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Baud Rate</label>
                   <select
                     value={localConfig.radar?.connection?.baudrate || 9600}
                     onChange={(e) => updateNestedValue('radar.connection.baudrate', parseInt(e.target.value))}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: colors.background,
+                      border: `1px solid ${colors.border}`,
+                      color: colors.text
+                    }}
                   >
                     <option value="9600">9600</option>
                     <option value="19200">19200</option>
@@ -517,23 +607,33 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
             {localConfig.radar?.type === 'tcp' && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Host</label>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Host</label>
                   <input
                     type="text"
                     value={localConfig.radar?.connection?.host || ''}
                     onChange={(e) => updateNestedValue('radar.connection.host', e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: colors.background,
+                      border: `1px solid ${colors.border}`,
+                      color: colors.text
+                    }}
                     placeholder="192.168.1.100"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Port</label>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Port</label>
                   <input
                     type="number"
                     value={localConfig.radar?.connection?.port || 5000}
                     onChange={(e) => updateNestedValue('radar.connection.port', parseInt(e.target.value))}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: colors.background,
+                      border: `1px solid ${colors.border}`,
+                      color: colors.text
+                    }}
                   />
                 </div>
               </>
@@ -541,12 +641,17 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
 
             {localConfig.radar?.type === 'file' && (
               <div>
-                <label className="block text-sm font-medium mb-2">File Path</label>
+                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>File Path</label>
                 <input
                   type="text"
                   value={localConfig.radar?.connection?.path || ''}
                   onChange={(e) => updateNestedValue('radar.connection.path', e.target.value)}
-                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 rounded-lg"
+                  style={{
+                    backgroundColor: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    color: colors.text
+                  }}
                   placeholder="/path/to/radar_data.txt"
                 />
               </div>
@@ -555,7 +660,8 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
             <button
               onClick={testRadar}
               disabled={loading}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium disabled:opacity-50 transition-colors"
+              className="px-4 py-2 rounded-lg font-medium disabled:opacity-50 transition-all"
+              style={{ backgroundColor: colors.success, color: colors.text }}
             >
               Test Radar Connection
             </button>
@@ -563,16 +669,21 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
         </div>
 
         {/* Publishing Settings */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold mb-4">Publishing Settings</h3>
+        <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
+          <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text }}>Publishing Settings</h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Publishing Mode</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Publishing Mode</label>
               <select
                 value={localConfig.publishing?.mode || 'on_detection'}
                 onChange={(e) => updateNestedValue('publishing.mode', e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  color: colors.text
+                }}
                 data-testid="publish-mode-select"
               >
                 <option value="on_detection">On Detection (Immediate)</option>
@@ -584,12 +695,17 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
 
             {localConfig.publishing?.mode === 'periodic' && (
               <div>
-                <label className="block text-sm font-medium mb-2">Interval (seconds)</label>
+                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Interval (seconds)</label>
                 <input
                   type="number"
                   value={localConfig.publishing?.interval || 30}
                   onChange={(e) => updateNestedValue('publishing.interval', parseInt(e.target.value))}
-                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 rounded-lg"
+                  style={{
+                    backgroundColor: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    color: colors.text
+                  }}
                   min="5"
                   max="300"
                 />
@@ -597,23 +713,33 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
             )}
 
             <div>
-              <label className="block text-sm font-medium mb-2">Station ID</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Station ID</label>
               <input
                 type="text"
                 value={localConfig.radar_data?.station_id || ''}
                 onChange={(e) => updateNestedValue('radar_data.station_id', e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  color: colors.text
+                }}
                 placeholder="RADAR-ALPHA-01"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Station Name</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Station Name</label>
               <input
                 type="text"
                 value={localConfig.radar_data?.station_name || ''}
                 onChange={(e) => updateNestedValue('radar_data.station_name', e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  color: colors.text
+                }}
                 placeholder="North Sector Radar"
               />
             </div>
@@ -623,9 +749,13 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
                 type="checkbox"
                 checked={localConfig.radar_data?.anonymize || false}
                 onChange={(e) => updateNestedValue('radar_data.anonymize', e.target.checked)}
-                className="w-5 h-5 bg-gray-900 border border-gray-700 rounded"
+                className="w-5 h-5 rounded"
+                style={{
+                  backgroundColor: colors.background,
+                  border: `1px solid ${colors.border}`
+                }}
               />
-              <label className="text-sm">Anonymize Station ID (recommended)</label>
+              <label className="text-sm" style={{ color: colors.text }}>Anonymize Station ID (recommended)</label>
             </div>
           </div>
         </div>
@@ -634,7 +764,8 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
         <button
           onClick={handleSave}
           disabled={loading}
-          className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium disabled:opacity-50 transition-colors"
+          className="w-full px-6 py-3 rounded-lg font-medium disabled:opacity-50 transition-all"
+          style={{ backgroundColor: colors.accent, color: colors.text }}
           data-testid="save-config-button"
         >
           Save Configuration
@@ -644,55 +775,59 @@ function Configuration({ config, loading, saveConfig, testRadar, testLoCrypt }) 
   );
 }
 
-function LogsView({ logs, fetchLogs }) {
+function LogsView({ logs, fetchLogs, colors }) {
   return (
     <div className="p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Activity Logs</h2>
-          <p className="text-gray-400">Recent publish events</p>
+          <h2 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>Activity Logs</h2>
+          <p style={{ color: colors.textMuted }}>Recent publish events</p>
         </div>
         <button
           onClick={fetchLogs}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+          className="px-4 py-2 rounded-lg font-medium transition-all"
+          style={{ backgroundColor: colors.accent, color: colors.text }}
         >
           Refresh
         </button>
       </div>
 
-      <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+      <div className="rounded-lg overflow-hidden" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-900 border-b border-gray-700">
+            <thead style={{ backgroundColor: colors.primary, borderBottom: `1px solid ${colors.border}` }}>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Timestamp</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Data Preview</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Token</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: colors.textMuted }}>Timestamp</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: colors.textMuted }}>Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: colors.textMuted }}>Data Preview</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: colors.textMuted }}>Token</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody style={{ borderTop: `1px solid ${colors.border}` }}>
               {logs.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan="4" className="px-6 py-8 text-center" style={{ color: colors.textMuted }}>
                     No logs available
                   </td>
                 </tr>
               ) : (
                 logs.map((log, index) => (
-                  <tr key={index} className="hover:bg-gray-700 transition-colors">
-                    <td className="px-6 py-4 text-sm">
+                  <tr key={index} style={{ borderBottom: `1px solid ${colors.border}` }}>
+                    <td className="px-6 py-4 text-sm" style={{ color: colors.text }}>
                       {new Date(log.timestamp).toLocaleString()}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <span className="px-2 py-1 bg-blue-900 text-blue-300 rounded text-xs font-medium">
+                      <span
+                        className="px-2 py-1 rounded text-xs font-medium"
+                        style={{ backgroundColor: colors.info, color: colors.text }}
+                      >
                         {log.data_type}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-mono text-gray-400 max-w-md truncate">
+                    <td className="px-6 py-4 text-sm font-mono max-w-md truncate" style={{ color: colors.textMuted }}>
                       {log.data.substring(0, 80)}...
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{log.gateway_token}</td>
+                    <td className="px-6 py-4 text-sm" style={{ color: colors.textMuted }}>{log.gateway_token}</td>
                   </tr>
                 ))
               )}
@@ -704,28 +839,27 @@ function LogsView({ logs, fetchLogs }) {
   );
 }
 
-function StatCard({ title, value, color = 'text-blue-400', isText = false }) {
+function StatCard({ title, value, valueColor, isText = false, colors }) {
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <p className="text-gray-400 text-sm mb-2">{title}</p>
-      <p className={`text-3xl font-bold ${color}`} data-testid={`stat-${title.toLowerCase()}`}>
+    <div className="rounded-lg p-6" style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}>
+      <p className="text-sm mb-2" style={{ color: colors.textMuted }}>{title}</p>
+      <p className="text-3xl font-bold" style={{ color: valueColor || colors.info }} data-testid={`stat-${title.toLowerCase()}`}>
         {isText ? value : value.toLocaleString()}
       </p>
     </div>
   );
 }
 
-function DataField({ label, value }) {
+function DataField({ label, value, colors }) {
   return (
     <div>
-      <p className="text-gray-400 text-xs mb-1">{label}</p>
-      <p className="font-medium">{value || 'N/A'}</p>
+      <p className="text-xs mb-1" style={{ color: colors.textMuted }}>{label}</p>
+      <p className="font-medium" style={{ color: colors.text }}>{value || 'N/A'}</p>
     </div>
   );
 }
 
 function formatUptime(uptimeStr) {
-  // Parse uptime string like "0:05:32.123456"
   const parts = uptimeStr.split(':');
   if (parts.length === 3) {
     const hours = parseInt(parts[0]);
