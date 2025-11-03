@@ -40,16 +40,16 @@ class GatewayManager:
             radar_config = self.config.get('radar_data', {})
             self.data_processor = RadarDataProcessor(radar_config)
             
-            # Initialize LoCrypt client
-            locrypt_config = self.config.get('locrypt', {})
-            backend_url = locrypt_config.get('backend_url', '')
-            gateway_token = locrypt_config.get('gateway_token', '')
+            # Initialize Darcy client
+            darcy_config = self.config.get('darcy', {})
+            backend_url = darcy_config.get('backend_url', '')
+            gateway_token = darcy_config.get('gateway_token', '')
             
             if backend_url and gateway_token:
-                self.locrypt_client = LoCryptClient(backend_url, gateway_token)
-                logger.info("LoCrypt client initialized")
+                self.darcy_client = DarcyClient(backend_url, gateway_token)
+                logger.info("Darcy client initialized")
             else:
-                logger.warning("LoCrypt credentials not configured")
+                logger.warning("Darcy credentials not configured")
                 
             # Initialize radar connector
             radar_type = self.config.get('radar', {}).get('type', 'mock')
