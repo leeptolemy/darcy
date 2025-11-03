@@ -10,7 +10,7 @@ A desktop application that integrates drone detection radar systems with the Dar
 - ✅ **Multi-Protocol Radar Support**: Serial (RS-232/485), TCP/IP, USB, and file-based inputs
 - ✅ **NMEA Protocol Parser**: Native support for NMEA format with extensible parser for custom protocols
 - ✅ **Real-time Monitoring**: 24/7 continuous radar data monitoring with auto-reconnect
-- ✅ **LoCrypt Integration**: Secure publishing to LoCrypt gateway with encrypted tokens
+- ✅ **Darcy Integration**: Secure publishing to Darcy gateway with encrypted tokens
 - ✅ **Multiple Publishing Modes**: On-detection, periodic, change-based, and manual trigger options
 - ✅ **Desktop UI**: Professional dashboard with real-time status, statistics, and controls
 - ✅ **System Tray Integration**: Minimizes to tray for background operation
