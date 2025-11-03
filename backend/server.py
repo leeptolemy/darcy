@@ -100,10 +100,10 @@ async def get_config():
     try:
         config = gateway_manager.get_config()
         # Mask sensitive data
-        if 'locrypt' in config and 'gateway_token' in config['locrypt']:
-            token = config['locrypt']['gateway_token']
+        if 'darcy' in config and 'gateway_token' in config['darcy']:
+            token = config['darcy']['gateway_token']
             if token:
-                config['locrypt']['gateway_token'] = token[:10] + "..." if len(token) > 10 else "***"
+                config['darcy']['gateway_token'] = token[:10] + "..." if len(token) > 10 else "***"
         return config
     except Exception as e:
         logging.error(f"Error getting config: {e}")
