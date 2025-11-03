@@ -2,7 +2,7 @@
 
 ## Overview
 
-A desktop application that integrates drone detection radar systems with the LoCrypt secure communication platform. The app reads radar data from drone detection hardware and publishes it anonymously to designated group chats.
+A desktop application that integrates drone detection radar systems with the Darcy secure communication platform. The app reads radar data from drone detection hardware and publishes it anonymously to designated group chats.
 
 ## Features
 
