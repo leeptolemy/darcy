@@ -218,11 +218,11 @@ class GatewayManager:
         return {
             'is_running': self.is_running,
             'radar_status': radar_status,
-            'locrypt_connected': self.locrypt_client is not None,
+            'darcy_connected': self.darcy_client is not None,
             'uptime': uptime,
             'last_detection': self.last_detection_time.isoformat() if self.last_detection_time else None,
             'stats': self.stats,
-            'locrypt_stats': self.locrypt_client.get_stats() if self.locrypt_client else {},
+            'darcy_stats': self.darcy_client.get_stats() if self.darcy_client else {},
             'last_published_data': self.last_published_data
         }
         
