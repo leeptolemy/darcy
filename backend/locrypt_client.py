@@ -8,8 +8,8 @@ import aiohttp
 
 logger = logging.getLogger(__name__)
 
-class LoCryptClient:
-    """Client for publishing data to LoCrypt gateway"""
+class DarcyClient:
+    """Client for publishing data to Darcy gateway"""
     
     def __init__(self, backend_url: str, gateway_token: str):
         self.backend_url = backend_url.rstrip('/')
