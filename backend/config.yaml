@@ -1,25 +1,21 @@
 darcy:
-  backend_url: "https://api.darcy.example.com"
-  gateway_token: ""
-
-radar:
-  type: "mock"  # mock | serial | tcp | usb | file
-  connection:
-    port: "/dev/ttyUSB0"
-    baudrate: 9600
-    timeout: 5
-
-publishing:
-  mode: "on_detection"  # on_detection | periodic | change_based | manual
-  interval: 30  # seconds (for periodic mode)
-  retry_attempts: 3
-
-radar_data:
-  station_id: "RADAR-ALPHA-01"
-  station_name: "North Sector Radar"
-  anonymize: true
-
+  backend_url: https://api.darcy.example.com
+  gateway_token: ''
 logging:
-  level: "INFO"
-  file: "logs/radar_gateway.log"
-  max_size: "10MB"
+  file: logs/radar_gateway.log
+  level: INFO
+  max_size: 10MB
+publishing:
+  interval: 30
+  mode: on_detection
+  retry_attempts: 3
+radar:
+  connection:
+    baudrate: 9600
+    port: /dev/ttyUSB0
+    timeout: 5
+  type: mock
+radar_data:
+  anonymize: true
+  station_id: RADAR-ALPHA-01
+  station_name: North Sector Radar
