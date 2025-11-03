@@ -25,7 +25,7 @@ class DarcyClient:
         }
         
     async def publish_data(self, radar_data: Dict[str, Any]) -> bool:
-        """Publish radar data to LoCrypt gateway"""
+        """Publish radar data to Darcy gateway"""
         
         endpoint = f"{self.backend_url}/api/gateway/publish-data"
         
