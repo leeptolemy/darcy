@@ -18,7 +18,7 @@ class GatewayManager:
         
         self.radar_connector: Optional[RadarConnector] = None
         self.data_processor: Optional[RadarDataProcessor] = None
-        self.locrypt_client: Optional[LoCryptClient] = None
+        self.darcy_client: Optional[DarcyClient] = None
         
         self.is_running = False
         self.last_detection_time: Optional[datetime] = None
