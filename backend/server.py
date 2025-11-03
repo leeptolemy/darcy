@@ -147,7 +147,7 @@ async def health_check():
 @api_router.post("/gateway/publish-data")
 async def publish_data(request: GatewayPublishRequest):
     """
-    LoCrypt gateway endpoint for publishing sensor data
+    Darcy gateway endpoint for publishing sensor data
     This is the endpoint that the app publishes TO (simulated)
     """
     try:
