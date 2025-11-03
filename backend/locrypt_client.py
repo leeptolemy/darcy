@@ -100,7 +100,7 @@ class DarcyClient:
             self.is_publishing = False
             
     async def test_connection(self) -> Dict[str, Any]:
-        """Test connection to LoCrypt backend"""
+        """Test connection to Darcy backend"""
         
         endpoint = f"{self.backend_url}/api/gateway/health"
         
