@@ -120,7 +120,7 @@ class GatewayManager:
             # Determine if we should publish
             should_publish = self._should_publish(processed, detection_count)
             
-            if should_publish and self.locrypt_client:
+            if should_publish and self.darcy_client:
                 await self._publish_data(processed)
                 
         except Exception as e:
