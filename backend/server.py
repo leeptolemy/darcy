@@ -129,14 +129,14 @@ async def test_radar():
         logging.error(f"Error testing radar: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.post("/gateway/test-locrypt")
-async def test_locrypt():
-    """Test LoCrypt connection"""
+@api_router.post("/gateway/test-darcy")
+async def test_darcy():
+    """Test Darcy connection"""
     try:
-        result = await gateway_manager.test_locrypt_connection()
+        result = await gateway_manager.test_darcy_connection()
         return result
     except Exception as e:
-        logging.error(f"Error testing LoCrypt: {e}")
+        logging.error(f"Error testing Darcy: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/gateway/health")
