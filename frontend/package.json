@@ -63,8 +63,13 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "electron": "electron ..",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron ..\"",
+    "electron-build": "yarn build && electron-builder"
   },
+  "main": "../electron.js",
+  "homepage": "./",
   "browserslist": {
     "production": [
       ">0.2%",
