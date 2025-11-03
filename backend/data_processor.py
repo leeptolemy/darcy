@@ -90,16 +90,20 @@ class RadarDataProcessor:
         try:
             parsed = json.loads(data)
             
-            # Expected fields: detections, range, bearing, altitude, speed
-            return {
+            # Expected fields: detections, range, bearing, altitude, speed, targets
+            result = {
                 'detections': parsed.get('detections', 0),
                 'range': parsed.get('range', 'N/A'),
                 'bearing': parsed.get('bearing', 'N/A'),
                 'altitude': parsed.get('altitude', 'N/A'),
                 'speed': parsed.get('speed', 'N/A'),
                 'confidence': parsed.get('confidence', 'MEDIUM'),
-                'signalStrength': parsed.get('signalStrength', 75)
+                'signalStrength': parsed.get('signalStrength', 75),
+                'latitude': parsed.get('latitude', 0),
+                'longitude': parsed.get('longitude', 0),
+                'targets': parsed.get('targets', [])
             }
+            return result
         except Exception as e:
             logger.debug(f"JSON parse failed: {e}")
             return None
