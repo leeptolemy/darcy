@@ -110,6 +110,9 @@ class GatewayManager:
             self.stats['detections_total'] += 1
             self.last_detection_time = datetime.utcnow()
             
+            # Store last data for display even if not published
+            self.last_published_data = processed
+            
             detection_count = processed.get('detections', 0)
             
             logger.info(f"Radar detection: {detection_count} targets")
@@ -117,7 +120,7 @@ class GatewayManager:
             # Determine if we should publish
             should_publish = self._should_publish(processed, detection_count)
             
-            if should_publish:
+            if should_publish and self.locrypt_client:
                 await self._publish_data(processed)
                 
         except Exception as e:
