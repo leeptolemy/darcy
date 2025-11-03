@@ -1,0 +1,11 @@
+# Sample radar data for file-based testing
+# Format: NMEA-like sentences
+
+$GPGGA,123519,045.00,N,3.2,E,1,08,150,85.0,M,46.9,M,,*47
+$GPGGA,123520,046.00,N,3.3,E,1,08,160,87.0,M,46.9,M,,*48
+$GPGGA,123521,047.00,N,3.4,E,1,08,170,89.0,M,46.9,M,,*49
+DET:2 RNG:3.5km BRG:048 ALT:180m SPD:90kts
+DET:3 RNG:2.8km BRG:050 ALT:190m SPD:95kts
+{"detections": 1, "range": "4.2km", "bearing": "052°", "altitude": "200m", "speed": "100kts", "confidence": "HIGH", "signalStrength": 92}
+DET:0 RNG:0km BRG:000 ALT:0m SPD:0kts
+$GPGGA,123522,048.00,N,3.1,E,1,08,155,83.0,M,46.9,M,,*50

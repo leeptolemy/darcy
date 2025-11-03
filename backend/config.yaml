@@ -1,0 +1,25 @@
+locrypt:
+  backend_url: "https://api.locrypt.example.com"
+  gateway_token: ""
+
+radar:
+  type: "mock"  # mock | serial | tcp | usb | file
+  connection:
+    port: "/dev/ttyUSB0"
+    baudrate: 9600
+    timeout: 5
+
+publishing:
+  mode: "on_detection"  # on_detection | periodic | change_based | manual
+  interval: 30  # seconds (for periodic mode)
+  retry_attempts: 3
+
+radar_data:
+  station_id: "RADAR-ALPHA-01"
+  station_name: "North Sector Radar"
+  anonymize: true
+
+logging:
+  level: "INFO"
+  file: "logs/radar_gateway.log"
+  max_size: "10MB"

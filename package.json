@@ -1,0 +1,36 @@
+{
+  "name": "drone-radar-gateway",
+  "version": "1.0.0",
+  "description": "Drone Detection Radar Desktop Application",
+  "main": "electron.js",
+  "author": "Your Organization",
+  "license": "PROPRIETARY",
+  "build": {
+    "appId": "com.yourorg.radar-gateway",
+    "productName": "Drone Radar Gateway",
+    "files": [
+      "electron.js",
+      "preload.js",
+      "frontend/build/**/*",
+      "backend/**/*",
+      "!backend/__pycache__",
+      "!backend/*.pyc",
+      "!backend/.env"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": ["nsis"],
+      "icon": "frontend/public/favicon.ico"
+    },
+    "linux": {
+      "target": ["deb", "AppImage"],
+      "category": "Utility"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.utilities"
+    }
+  }
+}
