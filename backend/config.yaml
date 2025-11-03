@@ -1,5 +1,5 @@
-locrypt:
-  backend_url: "https://api.locrypt.example.com"
+darcy:
+  backend_url: "https://api.darcy.example.com"
   gateway_token: ""
 
 radar:
