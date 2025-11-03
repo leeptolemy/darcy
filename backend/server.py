@@ -141,7 +141,7 @@ async def test_darcy():
 
 @api_router.get("/gateway/health")
 async def health_check():
-    """Health check endpoint for LoCrypt"""
+    """Health check endpoint for Darcy"""
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
 
 @api_router.post("/gateway/publish-data")
