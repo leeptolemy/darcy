@@ -153,20 +153,20 @@ class GatewayManager:
         return False
         
     async def _publish_data(self, data: Dict[str, Any]):
-        """Publish data to LoCrypt"""
-        if not self.locrypt_client:
-            logger.warning("LoCrypt client not configured")
+        """Publish data to Darcy"""
+        if not self.darcy_client:
+            logger.warning("Darcy client not configured")
             return
             
-        success = await self.locrypt_client.publish_data(data)
+        success = await self.darcy_client.publish_data(data)
         
         if success:
             self.stats['published_total'] += 1
             self.last_published_data = data
-            logger.info("Data published to LoCrypt")
+            logger.info("Data published to Darcy")
         else:
             # Queue for retry
-            await self.locrypt_client.queue_data(data)
+            await self.darcy_client.queue_data(data)
             logger.warning("Data queued for retry")
             
     async def manual_publish(self):
