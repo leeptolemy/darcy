@@ -4,7 +4,7 @@ from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
 from radar_connector import create_connector, RadarConnector
 from data_processor import RadarDataProcessor
-from locrypt_client import LoCryptClient
+from locrypt_client import DarcyClient
 from config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
