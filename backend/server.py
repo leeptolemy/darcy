@@ -228,10 +228,21 @@ async def get_key_metrics():
         key_metrics = {
             'radarId': data.get('radarId', 'RADAR-ALPHA-001') if data else 'RADAR-ALPHA-001',
             'detections': data.get('detections', 0) if data else 0,
-            'range': f\"{closest_range}km\" if primary_target else (data.get('range', 'N/A') if data else 'N/A'),
+            'range': f"{closest_range}km" if primary_target else (data.get('range', 'N/A') if data else 'N/A'),
             'bearing': primary_target.get('bearing', data.get('bearing', 'N/A')) if primary_target else (data.get('bearing', 'N/A') if data else 'N/A'),
             'altitude': primary_target.get('altitude', data.get('altitude', 'N/A')) if primary_target else (data.get('altitude', 'N/A') if data else 'N/A'),
-            'speed': primary_target.get('speed', data.get('speed', 'N/A')) if primary_target else (data.get('speed', 'N/A') if data else 'N/A'),\n            'signalStrength': data.get('signalStrength', 0) if data else 0,\n            'confidence': data.get('confidence', 'LOW') if data else 'LOW',\n            'threatLevel': 'HIGH' if (data and data.get('detections', 0) > 2) else 'MEDIUM' if (data and data.get('detections', 0) > 0) else 'LOW',\n            'timestamp': data.get('timestamp') if data else datetime.utcnow().isoformat(),\n            'targets_detail': data.get('targets', []) if data else []\n        }\n        \n        return key_metrics\n    except Exception as e:\n        logging.error(f\"Error getting key metrics: {e}\")\n        raise HTTPException(status_code=500, detail=str(e))
+            'speed': primary_target.get('speed', data.get('speed', 'N/A')) if primary_target else (data.get('speed', 'N/A') if data else 'N/A'),
+            'signalStrength': data.get('signalStrength', 0) if data else 0,
+            'confidence': data.get('confidence', 'LOW') if data else 'LOW',
+            'threatLevel': 'HIGH' if (data and data.get('detections', 0) > 2) else 'MEDIUM' if (data and data.get('detections', 0) > 0) else 'LOW',
+            'timestamp': data.get('timestamp') if data else datetime.utcnow().isoformat(),
+            'targets_detail': data.get('targets', []) if data else []
+        }
+        
+        return key_metrics
+    except Exception as e:
+        logging.error(f"Error getting key metrics: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/gateway/logs")
 async def get_logs(limit: int = 100):
