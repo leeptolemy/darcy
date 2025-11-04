@@ -149,12 +149,34 @@ async def health_check():
 async def publish_data(request: GatewayPublishRequest):
     """
     Darcy gateway endpoint for publishing sensor data
-    This is the endpoint that the app publishes TO (simulated)
+    This is the endpoint that the app publishes TO (simulated LoCrypt endpoint)
     """
     try:
         # Validate gateway token (in production, check against database)
         if not request.gateway_token:
             raise HTTPException(status_code=401, detail="Invalid gateway token")
+        
+        # Parse encrypted data to extract key metrics for LoCrypt format
+        try:
+            import json
+            data = json.loads(request.encrypted_data)
+            
+            # Format for LoCrypt display (matching their UI expectations)
+            locrypt_formatted_data = {
+                'radarId': data.get('radarId', 'UNKNOWN'),
+                'detections': data.get('detections', 0),
+                'range': data.get('range', 'N/A'),
+                'bearing': data.get('bearing', 'N/A'),
+                'altitude': data.get('altitude', 'N/A'),
+                'speed': data.get('speed', 'N/A'),
+                'signalStrength': data.get('signalStrength', 0),
+                'confidence': data.get('confidence', 'UNKNOWN'),
+                'threatLevel': 'HIGH' if data.get('detections', 0) > 2 else 'MEDIUM' if data.get('detections', 0) > 0 else 'LOW',
+                'timestamp': data.get('timestamp', datetime.utcnow().isoformat())
+            }
+            
+        except:
+            locrypt_formatted_data = {}
         
         # Log the received data
         logging.info(f"Received radar data: {request.encrypted_data[:100]}...")
@@ -164,17 +186,52 @@ async def publish_data(request: GatewayPublishRequest):
             'id': str(uuid.uuid4()),
             'gateway_token': request.gateway_token[:10] + "...",  # Masked
             'data': request.encrypted_data,
+            'formatted_data': locrypt_formatted_data,
             'data_type': request.data_type,
             'timestamp': datetime.utcnow().isoformat()
         }
         await db.published_data.insert_one(doc)
         
-        return {"message": "Sensor data published successfully"}
+        return {"message": "Sensor data published successfully", "formatted_data": locrypt_formatted_data}
     except HTTPException:
         raise
     except Exception as e:
         logging.error(f"Error publishing data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/gateway/key-metrics")
+async def get_key_metrics():
+    """
+    Get the most important metrics for LoCrypt display
+    Matches the format shown in LoCrypt app
+    """
+    try:
+        status = gateway_manager.get_status()
+        data = status.get('last_published_data')
+        
+        # Find closest/most threatening target
+        closest_range = 999
+        primary_target = None
+        
+        if data and data.get('targets'):
+            for target in data['targets']:
+                range_match = target.get('range', '999km').replace('km', '')
+                try:
+                    range_val = float(range_match)
+                    if range_val < closest_range:
+                        closest_range = range_val
+                        primary_target = target
+                except:
+                    pass
+        
+        # Return LoCrypt-compatible format
+        key_metrics = {
+            'radarId': data.get('radarId', 'RADAR-ALPHA-001') if data else 'RADAR-ALPHA-001',
+            'detections': data.get('detections', 0) if data else 0,
+            'range': f\"{closest_range}km\" if primary_target else (data.get('range', 'N/A') if data else 'N/A'),
+            'bearing': primary_target.get('bearing', data.get('bearing', 'N/A')) if primary_target else (data.get('bearing', 'N/A') if data else 'N/A'),
+            'altitude': primary_target.get('altitude', data.get('altitude', 'N/A')) if primary_target else (data.get('altitude', 'N/A') if data else 'N/A'),
+            'speed': primary_target.get('speed', data.get('speed', 'N/A')) if primary_target else (data.get('speed', 'N/A') if data else 'N/A'),\n            'signalStrength': data.get('signalStrength', 0) if data else 0,\n            'confidence': data.get('confidence', 'LOW') if data else 'LOW',\n            'threatLevel': 'HIGH' if (data and data.get('detections', 0) > 2) else 'MEDIUM' if (data and data.get('detections', 0) > 0) else 'LOW',\n            'timestamp': data.get('timestamp') if data else datetime.utcnow().isoformat(),\n            'targets_detail': data.get('targets', []) if data else []\n        }\n        \n        return key_metrics\n    except Exception as e:\n        logging.error(f\"Error getting key metrics: {e}\")\n        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/gateway/logs")
 async def get_logs(limit: int = 100):
