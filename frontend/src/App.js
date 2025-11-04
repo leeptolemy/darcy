@@ -174,7 +174,7 @@ function App() {
         <Btn active={v === 'config'} onClick={() => setV('config')} icon={Settings} C={C} />
         <Btn active={v === 'logs'} onClick={() => setV('logs')} icon={FileText} C={C} />
         <div style={{ marginTop: 'auto', padding: '6px 0', borderTop: `1px solid ${C.b}`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <button onClick={() => setShowSetup(true)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4 }} title=\"Gateway Setup\">
+          <button onClick={() => setShowSetup(true)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4 }} title="Gateway Setup">
             <Key size={20} style={{ color: st?.darcy_connected ? C.ok : C.w }} />
           </button>
         </div>
