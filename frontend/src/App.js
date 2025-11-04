@@ -117,23 +117,23 @@ function App() {
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 'bold', marginBottom: 6, color: C.t }}>GATEWAY TOKEN</label>
               <input 
-                type=\"text\" 
+                type="text" 
                 value={gwToken} 
                 onChange={(e) => setGwToken(e.target.value)}
-                placeholder=\"Paste your gateway token here (UUID format)\"
+                placeholder="Paste your gateway token here (UUID format)"
                 style={{ width: '100%', padding: '10px 12px', borderRadius: 4, fontSize: 11, fontFamily: 'monospace', background: C.p, border: `1px solid ${C.b}`, color: C.txt, outline: 'none' }}
-                data-testid=\"gateway-token-input\"
+                data-testid="gateway-token-input"
               />
-              <p style={{ fontSize: 9, color: C.m, marginTop: 6 }}>Get this token from \"Register New Gateway\" in LoCrypt's Sensor Gateway Management</p>
+              <p style={{ fontSize: 9, color: C.m, marginTop: 6 }}>Get this token from "Register New Gateway" in LoCrypt's Sensor Gateway Management</p>
             </div>
 
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 'bold', marginBottom: 6, color: C.t }}>LOCRYPT BACKEND URL</label>
               <input 
-                type=\"text\" 
+                type="text" 
                 value={gwUrl} 
                 onChange={(e) => setGwUrl(e.target.value)}
-                placeholder=\"https://api.locrypt.example.com\"
+                placeholder="https://api.locrypt.example.com"
                 style={{ width: '100%', padding: '10px 12px', borderRadius: 4, fontSize: 11, fontFamily: 'monospace', background: C.p, border: `1px solid ${C.b}`, color: C.txt, outline: 'none' }}
               />
             </div>
