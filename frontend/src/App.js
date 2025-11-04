@@ -154,7 +154,7 @@ function App() {
             </div>
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={saveGateway} disabled={!gwToken || l} style={{ flex: 1, padding: '12px', borderRadius: 4, fontSize: 12, fontWeight: 'bold', background: C.t, color: C.p, border: 'none', cursor: gwToken && !l ? 'pointer' : 'not-allowed', opacity: gwToken && !l ? 1 : 0.5 }} data-testid=\"save-gateway-btn\">
+              <button onClick={saveGateway} disabled={!gwToken || l} style={{ flex: 1, padding: '12px', borderRadius: 4, fontSize: 12, fontWeight: 'bold', background: C.t, color: C.p, border: 'none', cursor: gwToken && !l ? 'pointer' : 'not-allowed', opacity: gwToken && !l ? 1 : 0.5 }} data-testid="save-gateway-btn">
                 SAVE GATEWAY
               </button>
               <button onClick={() => setShowSetup(false)} style={{ flex: 1, padding: '12px', borderRadius: 4, fontSize: 12, fontWeight: 'bold', background: 'transparent', color: C.t, border: `1px solid ${C.t}`, cursor: 'pointer' }}>
