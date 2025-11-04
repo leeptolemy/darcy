@@ -91,7 +91,7 @@ function App() {
             </div>
             <span style={{ fontWeight: 'bold', color: st?.radar_status === 'monitoring' ? C.ok : C.w }}>{st?.radar_status === 'monitoring' ? 'ON' : 'OFF'}</span>
           </div>
-          <button onClick={() => setShowSetup(true)} style={{ marginLeft: 10, padding: '6px 12px', borderRadius: 3, background: st?.darcy_connected ? C.ok + '20' : C.w + '20', border: `1px solid ${st?.darcy_connected ? C.ok : C.w}`, display: 'flex', gap: 6, alignItems: 'center', fontSize: 9, cursor: 'pointer', color: st?.darcy_connected ? C.ok : C.w, fontWeight: 'bold' }} data-testid=\"gateway-setup-btn\">
+          <button onClick={() => setShowSetup(true)} style={{ marginLeft: 10, padding: '6px 12px', borderRadius: 3, background: st?.darcy_connected ? C.ok + '20' : C.w + '20', border: `1px solid ${st?.darcy_connected ? C.ok : C.w}`, display: 'flex', gap: 6, alignItems: 'center', fontSize: 9, cursor: 'pointer', color: st?.darcy_connected ? C.ok : C.w, fontWeight: 'bold' }} data-testid="gateway-setup-btn">
             <Link size={12} />
             <span>{st?.darcy_connected ? 'GATEWAY OK' : 'SETUP GATEWAY'}</span>
           </button>
