@@ -1307,4 +1307,87 @@ function formatUptime(s) {
   return s;
 }
 
+function StatusCard({ title, value, subtext, color, colors, icon: Icon }) {
+  return (
+    <TacticalCard title={title} colors={colors}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        {Icon && <Icon size={20} style={{ color: color }} />}
+        <div style={{ fontSize: 10, color: colors.textMuted }}>{subtext}</div>
+      </div>
+      <div style={{ fontSize: 24, fontWeight: 'bold', color: color, textTransform: 'uppercase' }}>
+        {value}
+      </div>
+    </TacticalCard>
+  );
+}
+
+function TacticalCard({ title, children, colors, style = {} }) {
+  return (
+    <div style={{ 
+      borderRadius: 8, 
+      padding: 16, 
+      background: colors.surface, 
+      border: '1px solid ' + colors.border, 
+      boxShadow: '0 0 10px ' + colors.gridLine, 
+      ...style 
+    }}>
+      <h3 style={{ 
+        fontSize: 11, 
+        fontWeight: 'bold', 
+        marginBottom: 12, 
+        letterSpacing: '0.12em', 
+        color: colors.teal, 
+        borderBottom: '1px solid ' + colors.border, 
+        paddingBottom: 8 
+      }}>
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+}
+
+function TacticalButton({ onClick, disabled, color, icon: Icon, label, testId }) {
+  return (
+    <button 
+      onClick={onClick} 
+      disabled={disabled}
+      style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        gap: 6, 
+        padding: '12px', 
+        borderRadius: 4, 
+        fontSize: 11, 
+        fontWeight: 'bold', 
+        letterSpacing: '0.1em', 
+        background: 'transparent', 
+        color: color, 
+        border: '2px solid ' + (disabled ? COLORS.textMuted : color), 
+        boxShadow: disabled ? 'none' : '0 0 10px ' + color, 
+        cursor: disabled ? 'not-allowed' : 'pointer', 
+        opacity: disabled ? 0.5 : 1, 
+        transition: 'all 0.2s' 
+      }}
+      data-testid={testId}
+    >
+      {Icon && <Icon size={14} />}
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function MetricBox({ label, value, unit, valueColor, colors }) {
+  return (
+    <div>
+      <p style={{ fontSize: 10, marginBottom: 4, letterSpacing: '0.05em', color: colors.textMuted }}>{label}</p>
+      <p style={{ fontSize: 24, fontWeight: 'bold', color: valueColor || colors.teal }}>
+        {typeof value === 'number' ? value.toLocaleString() : value}
+      </p>
+      <p style={{ fontSize: 10, letterSpacing: '0.05em', color: colors.textMuted }}>{unit}</p>
+    </div>
+  );
+}
+
 export default App;
