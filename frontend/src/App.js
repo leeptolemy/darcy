@@ -139,6 +139,8 @@ function App() {
         getStatusText={getStatusText} 
         setShowSetup={setShowSetup}
         hasGateway={hasGateway}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
         colors={COLORS} 
       />
 
