@@ -201,7 +201,7 @@ function App() {
   );
 }
 
-function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGateway, colors }) {
+function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGateway, viewMode, setViewMode, colors }) {
   return (
     <div style={{ background: colors.surface, borderBottom: '2px solid ' + colors.teal, boxShadow: '0 0 20px rgba(0, 217, 255, 0.3)', padding: '8px 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -231,6 +231,27 @@ function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGatewa
               </span>
             </div>
           </div>
+          <button 
+            onClick={() => setViewMode(viewMode === 'standard' ? 'easy' : 'standard')}
+            style={{ 
+              marginLeft: 10, 
+              padding: '6px 12px', 
+              borderRadius: 3, 
+              background: viewMode === 'standard' ? colors.teal + '20' : colors.warning + '20', 
+              border: '1px solid ' + (viewMode === 'standard' ? colors.teal : colors.warning), 
+              display: 'flex', 
+              gap: 6, 
+              alignItems: 'center', 
+              fontSize: 9, 
+              cursor: 'pointer', 
+              color: viewMode === 'standard' ? colors.teal : colors.warning, 
+              fontWeight: 'bold' 
+            }} 
+            data-testid="view-mode-toggle"
+          >
+            <Activity size={12} />
+            <span>{viewMode === 'standard' ? 'STANDARD' : 'EASY'} MODE</span>
+          </button>
           <button 
             onClick={() => setShowSetup(true)} 
             style={{ 
