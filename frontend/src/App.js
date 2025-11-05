@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Activity, Radio, Cloud, Settings, PlayCircle, StopCircle, CheckCircle, FileText, Shield, Radar, Wifi, Battery, Clock, Key, Link, AlertTriangle } from 'lucide-react';
+import { Activity, Radio, Cloud, Settings, PlayCircle, StopCircle, AlertCircle, CheckCircle, Send, FileText, Shield, Radar, Navigation, MapPin, Wifi, Battery, Clock, Key, Link, AlertTriangle } from 'lucide-react';
 import { Waveform, FreqSpec, GeoMap, ThreatMatrix, LocationWidget, AltitudeChart, SpeedHistogram } from './components/widgets';
 import { RadarSweep } from './components/RadarSweep';
 import '@/App.css';
