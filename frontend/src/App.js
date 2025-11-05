@@ -493,6 +493,97 @@ function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway,
   );
 }
 
+function EasyModeDashboard({ status, loading, getStatusColor, getStatusText, startGateway, stopGateway, manualPublish, data, targets, hasGateway, colors }) {
+  return (
+    <div style={{ padding: 20 }}>
+      {!hasGateway && (
+        <div style={{ 
+          marginBottom: 16, 
+          padding: 12, 
+          background: colors.warning + '20', 
+          border: '2px solid ' + colors.warning, 
+          borderRadius: 4, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center' 
+        }}>
+          <div style={{ fontSize: 11, color: colors.warning }}>
+            <div style={{ fontWeight: 'bold', marginBottom: 4 }}>⚠ LOCRYPT GATEWAY NOT CONFIGURED</div>
+            <div style={{ fontSize: 9, color: colors.textMuted }}>
+              Click "SETUP GATEWAY" to connect with LoCrypt Messenger
+            </div>
+          </div>
+          <Key size={24} style={{ color: colors.warning }} />
+        </div>
+      )}
+
+      {/* Top Status Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 16 }}>
+        <StatusCard title="GATEWAY" value={getStatusText()} subtext="GW-001" color={getStatusColor()} colors={colors} icon={getStatusColor() === colors.success ? CheckCircle : AlertCircle} />
+        <StatusCard title="RADAR" value={status?.radar_status || 'OFFLINE'} subtext="RDR-ALPHA" color={status?.radar_status === 'monitoring' ? colors.success : colors.error} colors={colors} icon={status?.radar_status === 'monitoring' ? CheckCircle : AlertCircle} />
+        <StatusCard title="LOCRYPT" value={hasGateway ? 'LINKED' : 'NOT SETUP'} subtext="GATEWAY" color={hasGateway ? colors.success : colors.warning} colors={colors} icon={hasGateway ? Cloud : AlertTriangle} />
+        <StatusCard title="UPTIME" value={status?.uptime ? formatUptime(status.uptime) : 'N/A'} subtext="RUNTIME" color={colors.teal} colors={colors} icon={Activity} />
+      </div>
+
+      {/* Main 3-Column Layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr 340px', gap: 16, height: 'calc(100vh - 320px)' }}>
+        {/* Left Column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <TacticalCard title="SIGNAL WAVEFORM" colors={colors}>
+            <Waveform colors={colors} status={status} />
+          </TacticalCard>
+          <TacticalCard title="FREQUENCY SPECTRUM" colors={colors}>
+            <FreqSpec colors={colors} status={status} />
+          </TacticalCard>
+          <TacticalCard title="POSITION & LOCATION" colors={colors}>
+            <LocationWidget colors={colors} data={data} />
+          </TacticalCard>
+        </div>
+
+        {/* Center - Radar */}
+        <TacticalCard title="RADAR SWEEP - 360° COVERAGE" colors={colors}>
+          <RadarSweep colors={colors} status={status} data={data} targets={targets} />
+        </TacticalCard>
+
+        {/* Right Column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <TacticalCard title={`TARGET TRACKING (${targets.length})`} colors={colors}>
+            <TargetListPanel targets={targets} colors={colors} />
+          </TacticalCard>
+          <TacticalCard title="GEOGRAPHIC MAP" colors={colors}>
+            <GeoMap colors={colors} targets={targets} />
+          </TacticalCard>
+          <TacticalCard title="SIGNAL STRENGTH" colors={colors}>
+            <SignalStrengthPanel data={data} colors={colors} />
+          </TacticalCard>
+        </div>
+      </div>
+
+      {/* Bottom Controls */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, marginTop: 16 }}>
+        <TacticalCard title="SENSOR METRICS" colors={colors}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            <MetricBox label="DETECTIONS" value={status?.stats?.detections_total || 0} unit="TARGETS" colors={colors} />
+            <MetricBox label="PUBLISHED" value={status?.stats?.published_total || 0} unit="MSGS" colors={colors} />
+            <MetricBox label="ERRORS" value={status?.stats?.errors_total || 0} unit="EVENTS" valueColor={colors.error} colors={colors} />
+          </div>
+        </TacticalCard>
+        <TacticalCard title="MISSION CONTROL" colors={colors}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+            {!status?.is_running ? (
+              <TacticalButton onClick={startGateway} disabled={loading} color={colors.success} icon={PlayCircle} label="START" testId="start-button" />
+            ) : (
+              <TacticalButton onClick={stopGateway} disabled={loading} color={colors.error} icon={StopCircle} label="STOP" testId="stop-button" />
+            )}
+            <TacticalButton onClick={manualPublish} disabled={loading || !status?.is_running} color={colors.teal} icon={Send} label="PUBLISH" testId="publish-button" />
+            <TacticalButton onClick={() => {}} disabled={loading} color={colors.warning} icon={Radio} label="TEST" />
+          </div>
+        </TacticalCard>
+      </div>
+    </div>
+  );
+}
+
 function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, colors }) {
   const threatLevel = targets.length === 0 ? 'CLEAR' : targets.length < 2 ? 'GUARDED' : targets.length < 4 ? 'ELEVATED' : 'HIGH';
   const threatColor = threatLevel === 'CLEAR' ? colors.success : threatLevel === 'GUARDED' ? colors.teal : threatLevel === 'ELEVATED' ? colors.warning : colors.error;
