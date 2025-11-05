@@ -459,119 +459,126 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 8 }}>
-        {/* Row 1 - Top panels */}
-        <Panel title="MISSION" colors={colors} span={2}>
-          <MissionPanel targets={targets} status={status} threatLevel={threatLevel} threatColor={threatColor} colors={colors} />
-        </Panel>
-        
-        <Panel title="DRONE MODEL" colors={colors} span={2}>
-          <DroneModelPanel targets={targets} colors={colors} />
-        </Panel>
-        
-        <Panel title="RF FREQ" colors={colors} span={2}>
-          <RFFrequencyPanel colors={colors} />
-        </Panel>
-        
-        <Panel title="BATTERY" colors={colors} span={2}>
-          <BatteryPanel targets={targets} colors={colors} />
-        </Panel>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 8, gridAutoRows: 'minmax(100px, auto)' }}>
+        {/* Left Column 1 - Mission + Signal + Stats */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="MISSION" colors={colors}>
+            <MissionPanel targets={targets} status={status} threatLevel={threatLevel} threatColor={threatColor} colors={colors} />
+          </Panel>
+          <Panel title="SIGNAL" colors={colors}>
+            <Waveform colors={colors} status={status} />
+          </Panel>
+          <Panel title="STATS" colors={colors}>
+            <StatsPanel status={status} colors={colors} />
+          </Panel>
+        </div>
 
-        {/* Center - Large Radar (spans 8 columns) */}
-        <div style={{ gridColumn: 'span 8', background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 4, padding: 8 }}>
+        {/* Left Column 2 - Drone Model + Freq Spec + Track Quality */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="DRONE MODEL" colors={colors}>
+            <DroneModelPanel targets={targets} colors={colors} />
+          </Panel>
+          <Panel title="FREQ SPEC" colors={colors}>
+            <FreqSpec colors={colors} status={status} />
+          </Panel>
+          <Panel title="TRACK Q" colors={colors}>
+            <TrackQualityPanel targets={targets} colors={colors} />
+          </Panel>
+        </div>
+
+        {/* Left Column 3 - RF Freq + Doppler + Trajectory */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="RF FREQ" colors={colors}>
+            <RFFrequencyPanel colors={colors} />
+          </Panel>
+          <Panel title="DOPPLER" colors={colors}>
+            <DopplerPanel targets={targets} colors={colors} />
+          </Panel>
+          <Panel title="TRAJECTORY" colors={colors}>
+            <TrajectoryPanel targets={targets} data={data} colors={colors} />
+          </Panel>
+        </div>
+
+        {/* Left Column 4 - Battery + Altitude + Weather */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="BATTERY" colors={colors}>
+            <BatteryPanel targets={targets} colors={colors} />
+          </Panel>
+          <Panel title="ALTITUDE" colors={colors}>
+            <AltitudeChart colors={colors} targets={targets} />
+          </Panel>
+          <Panel title="WEATHER" colors={colors}>
+            <WeatherPanel colors={colors} />
+          </Panel>
+        </div>
+
+        {/* Center - Large Radar (spans 8 columns, 3 rows) */}
+        <div style={{ gridColumn: 'span 8', gridRow: 'span 3', background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 4, padding: 8 }}>
           <div style={{ fontSize: 9, fontWeight: 'bold', color: colors.teal, borderBottom: '1px solid ' + colors.border, paddingBottom: 4, marginBottom: 6 }}>
             RADAR SWEEP - 360° COVERAGE
           </div>
           <RadarSweep colors={colors} status={status} data={data} targets={targets} />
         </div>
 
-        <Panel title="THREAT MTX" colors={colors} span={2}>
-          <ThreatMatrix colors={colors} targets={targets} />
-        </Panel>
-        
-        <Panel title="SIGINT" colors={colors} span={2}>
-          <SigintPanel colors={colors} />
-        </Panel>
+        {/* Right Column 1 - Threat Matrix + Bearing + System */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="THREAT MTX" colors={colors}>
+            <ThreatMatrix colors={colors} targets={targets} />
+          </Panel>
+          <Panel title="BEARING" colors={colors}>
+            <BearingPanel targets={targets} colors={colors} />
+          </Panel>
+          <Panel title="SYSTEM" colors={colors}>
+            <SystemHealthPanel colors={colors} />
+          </Panel>
+        </div>
 
-        {/* Row 2 - More panels */}
-        <Panel title="SIGNAL" colors={colors} span={2}>
-          <Waveform colors={colors} status={status} />
-        </Panel>
-        
-        <Panel title="FREQ SPEC" colors={colors} span={2}>
-          <FreqSpec colors={colors} status={status} />
-        </Panel>
-        
-        <Panel title="DOPPLER" colors={colors} span={2}>
-          <DopplerPanel targets={targets} colors={colors} />
-        </Panel>
-        
-        <Panel title="ALTITUDE" colors={colors} span={2}>
-          <AltitudeChart colors={colors} targets={targets} />
-        </Panel>
-        
-        <Panel title="BEARING" colors={colors} span={2}>
-          <BearingPanel targets={targets} colors={colors} />
-        </Panel>
+        {/* Right Column 2 - SIGINT + Position + Power */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="SIGINT" colors={colors}>
+            <SigintPanel colors={colors} />
+          </Panel>
+          <Panel title="POSITION" colors={colors}>
+            <LocationWidget colors={colors} data={data} />
+          </Panel>
+          <Panel title="POWER" colors={colors}>
+            <PowerPanel colors={colors} />
+          </Panel>
+        </div>
 
-        <Panel title="POSITION" colors={colors} span={2}>
-          <LocationWidget colors={colors} data={data} />
-        </Panel>
+        {/* Right Column 3 - Targets + Geo Map + Network */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="TARGETS" colors={colors}>
+            <TargetListPanel targets={targets} colors={colors} />
+          </Panel>
+          <Panel title="GEO MAP" colors={colors}>
+            <GeoMap colors={colors} targets={targets} />
+          </Panel>
+          <Panel title="NETWORK" colors={colors}>
+            <NetworkPanel colors={colors} />
+          </Panel>
+        </div>
 
-        <Panel title="TARGETS" colors={colors} span={2}>
-          <TargetListPanel targets={targets} colors={colors} />
-        </Panel>
+        {/* Right Column 4 - Signal Strength + Alert Log + Airspace */}
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Panel title="SIGNAL STR" colors={colors}>
+            <SignalStrengthPanel data={data} colors={colors} />
+          </Panel>
+          <Panel title="ALERT LOG" colors={colors}>
+            <AlertLogPanel targets={targets} colors={colors} />
+          </Panel>
+          <Panel title="AIRSPACE" colors={colors}>
+            <AirspacePanel targets={targets} colors={colors} />
+          </Panel>
+        </div>
 
-        <Panel title="GEO MAP" colors={colors} span={2}>
-          <GeoMap colors={colors} targets={targets} />
-        </Panel>
-        
-        <Panel title="SIGNAL STR" colors={colors} span={2}>
-          <SignalStrengthPanel data={data} colors={colors} />
-        </Panel>
-
+        {/* Bottom Row - Full Width Panels */}
         <Panel title="EVENT LOG" colors={colors} span={8}>
           <EventLogPanel events={events} colors={colors} />
         </Panel>
 
         <Panel title="LOCRYPT TX" colors={colors} span={4}>
           <LocryptTxPanel status={status} logs={logs} hasGateway={hasGateway} colors={colors} />
-        </Panel>
-
-        <Panel title="STATS" colors={colors} span={2}>
-          <StatsPanel status={status} colors={colors} />
-        </Panel>
-        
-        <Panel title="TRACK Q" colors={colors} span={2}>
-          <TrackQualityPanel targets={targets} colors={colors} />
-        </Panel>
-
-        <Panel title="TRAJECTORY" colors={colors} span={2}>
-          <TrajectoryPanel targets={targets} data={data} colors={colors} />
-        </Panel>
-
-        <Panel title="WEATHER" colors={colors} span={2}>
-          <WeatherPanel colors={colors} />
-        </Panel>
-
-        <Panel title="SYSTEM" colors={colors} span={2}>
-          <SystemHealthPanel colors={colors} />
-        </Panel>
-
-        <Panel title="POWER" colors={colors} span={2}>
-          <PowerPanel colors={colors} />
-        </Panel>
-
-        <Panel title="NETWORK" colors={colors} span={2}>
-          <NetworkPanel colors={colors} />
-        </Panel>
-
-        <Panel title="ALERT LOG" colors={colors} span={4}>
-          <AlertLogPanel targets={targets} colors={colors} />
-        </Panel>
-
-        <Panel title="AIRSPACE" colors={colors} span={2}>
-          <AirspacePanel targets={targets} colors={colors} />
         </Panel>
 
         <Panel title="SECTOR COV" colors={colors} span={2}>
@@ -582,7 +589,7 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
           <SpeedHistogram colors={colors} targets={targets} />
         </Panel>
 
-        <Panel title="CORRELATION" colors={colors} span={2}>
+        <Panel title="CORRELATION" colors={colors} span={4}>
           <CorrelationPanel targets={targets} colors={colors} />
         </Panel>
 
