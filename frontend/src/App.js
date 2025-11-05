@@ -162,20 +162,36 @@ function App() {
         
         <div style={{ flex: 1, overflow: 'auto', background: COLORS.primary }}>
           {activeView === 'dashboard' && (
-            <Dashboard 
-              status={status}
-              loading={loading}
-              getStatusColor={getStatusColor}
-              startGateway={startGateway}
-              stopGateway={stopGateway}
-              manualPublish={manualPublish}
-              data={data}
-              targets={targets}
-              events={events}
-              logs={logs}
-              hasGateway={hasGateway}
-              colors={COLORS}
-            />
+            viewMode === 'easy' ? (
+              <EasyModeDashboard 
+                status={status}
+                loading={loading}
+                getStatusColor={getStatusColor}
+                getStatusText={getStatusText}
+                startGateway={startGateway}
+                stopGateway={stopGateway}
+                manualPublish={manualPublish}
+                data={data}
+                targets={targets}
+                hasGateway={hasGateway}
+                colors={COLORS}
+              />
+            ) : (
+              <Dashboard 
+                status={status}
+                loading={loading}
+                getStatusColor={getStatusColor}
+                startGateway={startGateway}
+                stopGateway={stopGateway}
+                manualPublish={manualPublish}
+                data={data}
+                targets={targets}
+                events={events}
+                logs={logs}
+                hasGateway={hasGateway}
+                colors={COLORS}
+              />
+            )
           )}
           {activeView === 'config' && <ConfigView config={config} colors={COLORS} />}
           {activeView === 'logs' && <LogsView logs={logs} colors={COLORS} />}
