@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Activity, Radio, Cloud, Settings, PlayCircle, StopCircle, AlertCircle, CheckCircle, Send, FileText, Shield, Radar, Navigation, MapPin, Wifi, Battery, Clock, Key, Link, AlertTriangle } from 'lucide-react';
 import { Waveform, FreqSpec, GeoMap, ThreatMatrix, LocationWidget, AltitudeChart, SpeedHistogram } from './components/widgets';
 import { RadarSweep } from './components/RadarSweep';
+import { AIPredictionWidget } from './components/AIPrediction';
 import '@/App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
