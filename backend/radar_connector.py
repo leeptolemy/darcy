@@ -212,17 +212,17 @@ class FileRadarConnector(RadarConnector):
 
 
 class MockRadarConnector(RadarConnector):
-    """Mock radar connector for testing/demo"""
+    """Mock radar connector with PATTERNED data for AI training"""
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
         self.detection_count = 0
-        self.targets = []
-        self.last_update = datetime.utcnow()
+        self.start_time = datetime.utcnow()
         
     async def connect(self) -> bool:
         self.is_connected = True
-        logger.info("Mock radar connected")
+        self.start_time = datetime.utcnow()
+        logger.info("Mock radar connected - PATTERN MODE for AI training")
         return True
         
     async def disconnect(self):
@@ -232,23 +232,91 @@ class MockRadarConnector(RadarConnector):
     async def read_data(self) -> Optional[Dict[str, Any]]:
         import random
         
-        await asyncio.sleep(random.uniform(1, 3))  # Faster updates
+        await asyncio.sleep(random.uniform(2, 4))  # Every 2-4 seconds
         
-        # Always generate data for visualization
-        self.detection_count += random.randint(0, 2)
+        self.detection_count += 1
+        elapsed = (datetime.utcnow() - self.start_time).total_seconds()
         
-        # Generate 1-3 targets
-        num_targets = random.randint(0, 3)
+        # PATTERN 1: Every 20 seconds, drone from EAST (090°)
+        pattern_1_active = int(elapsed) % 20 < 5  # Active for 5 seconds every 20 seconds
+        
+        # PATTERN 2: Every 30 seconds, wave of 3 drones
+        pattern_2_active = int(elapsed) % 30 < 8  # Active for 8 seconds every 30 seconds
+        
+        # PATTERN 3: Every 60 seconds, drone from NORTH (000°)
+        pattern_3_active = int(elapsed) % 60 < 6  # Active for 6 seconds every 60 seconds
+        
         targets = []
+        num_targets = 0
         
-        for i in range(num_targets):
+        # Apply patterns
+        if pattern_1_active:
+            # Drone from EAST (080-100°)
+            bearing = random.randint(85, 95)
+            range_km = round(random.uniform(5.0, 25.0), 2)
+            altitude = random.randint(150, 400)
+            speed = random.randint(60, 120)
+            
+            targets.append({
+                'id': f'TGT-{self.detection_count:03d}',
+                'type': 'DRONE',
+                'range': f'{range_km}km',
+                'bearing': f'{bearing:03d}°',
+                'altitude': f'{altitude}m',
+                'speed': f'{speed}kts',
+                'latitude': round(34.0522 + random.uniform(-0.2, 0.2), 4),
+                'longitude': round(-118.2437 + random.uniform(-0.2, 0.2), 4)
+            })
+            num_targets += 1
+        
+        if pattern_2_active:
+            # Wave of 3 drones from various directions
+            for i in range(2):  # Add 2 more drones
+                bearing = random.randint(0, 359)
+                range_km = round(random.uniform(10.0, 35.0), 2)
+                altitude = random.randint(100, 600)
+                speed = random.randint(40, 150)
+                
+                targets.append({
+                    'id': f'TGT-{self.detection_count + i + 1:03d}',
+                    'type': 'DRONE',
+                    'range': f'{range_km}km',
+                    'bearing': f'{bearing:03d}°',
+                    'altitude': f'{altitude}m',
+                    'speed': f'{speed}kts',
+                    'latitude': round(34.0522 + random.uniform(-0.3, 0.3), 4),
+                    'longitude': round(-118.2437 + random.uniform(-0.3, 0.3), 4)
+                })
+            num_targets += 2
+        
+        if pattern_3_active:
+            # Drone from NORTH (350-010°)
+            bearing = random.choice([355, 358, 0, 2, 5, 8])
+            range_km = round(random.uniform(8.0, 20.0), 2)
+            altitude = random.randint(200, 500)
+            speed = random.randint(70, 140)
+            
+            targets.append({
+                'id': f'TGT-{self.detection_count + 10:03d}',
+                'type': 'DRONE',
+                'range': f'{range_km}km',
+                'bearing': f'{bearing:03d}°',
+                'altitude': f'{altitude}m',
+                'speed': f'{speed}kts',
+                'latitude': round(34.0522 + random.uniform(-0.15, 0.15), 4),
+                'longitude': round(-118.2437 + random.uniform(-0.15, 0.15), 4)
+            })
+            num_targets += 1
+        
+        # 30% chance of random drone (to add some unpredictability)
+        if random.random() < 0.3 and num_targets == 0:
             bearing = random.randint(0, 359)
-            range_km = round(random.uniform(0.5, 45.0), 2)
+            range_km = round(random.uniform(2.0, 45.0), 2)
             altitude = random.randint(50, 800)
             speed = random.randint(20, 180)
             
             targets.append({
-                'id': f'TGT-{self.detection_count + i:03d}',
+                'id': f'TGT-{self.detection_count:03d}',
                 'type': 'DRONE',
                 'range': f'{range_km}km',
                 'bearing': f'{bearing:03d}°',
@@ -257,46 +325,27 @@ class MockRadarConnector(RadarConnector):
                 'latitude': round(34.0522 + random.uniform(-0.5, 0.5), 4),
                 'longitude': round(-118.2437 + random.uniform(-0.5, 0.5), 4)
             })
+            num_targets = 1
         
-        if num_targets > 0:
-            # Use first target as main detection
-            main_target = targets[0]
-            signal_strength = random.randint(60, 95)
+        if num_targets > 0 or True:  # Always send telemetry
+            main_target = targets[0] if targets else None
+            signal_strength = random.randint(65, 95) if num_targets > 0 else random.randint(30, 50)
             confidence = 'HIGH' if signal_strength > 80 else 'MEDIUM' if signal_strength > 60 else 'LOW'
             
             return {
                 'raw_data': json.dumps({
                     'detections': num_targets,
-                    'range': main_target['range'],
-                    'bearing': main_target['bearing'],
-                    'altitude': main_target['altitude'],
-                    'speed': main_target['speed'],
+                    'range': main_target['range'] if main_target else '0km',
+                    'bearing': main_target['bearing'] if main_target else '000°',
+                    'altitude': main_target['altitude'] if main_target else '0m',
+                    'speed': main_target['speed'] if main_target else '0kts',
                     'confidence': confidence,
                     'signalStrength': signal_strength,
-                    'latitude': main_target['latitude'],
-                    'longitude': main_target['longitude'],
+                    'latitude': main_target['latitude'] if main_target else 34.0522,
+                    'longitude': main_target['longitude'] if main_target else -118.2437,
                     'targets': targets
                 }),
-                'source': 'mock',
-                'timestamp': datetime.utcnow().isoformat(),
-                'detection_count': self.detection_count
-            }
-        else:
-            # No targets but still send telemetry
-            return {
-                'raw_data': json.dumps({
-                    'detections': 0,
-                    'range': '0km',
-                    'bearing': '000°',
-                    'altitude': '0m',
-                    'speed': '0kts',
-                    'confidence': 'LOW',
-                    'signalStrength': random.randint(30, 50),
-                    'latitude': 34.0522,
-                    'longitude': -118.2437,
-                    'targets': []
-                }),
-                'source': 'mock',
+                'source': 'mock_patterned',
                 'timestamp': datetime.utcnow().isoformat(),
                 'detection_count': self.detection_count
             }
