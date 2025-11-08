@@ -245,6 +245,46 @@ async def get_key_metrics():
         logging.error(f"Error getting key metrics: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/predictions/active")
+async def get_active_predictions():
+    """Get active AI predictions"""
+    try:
+        predictions = prediction_engine.get_active_predictions()
+        return {"predictions": predictions}
+    except Exception as e:
+        logging.error(f"Error getting predictions: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/predictions/history")
+async def get_prediction_history(limit: int = 10):
+    """Get prediction history with results"""
+    try:
+        history = prediction_engine.get_recent_results(limit)
+        return {"history": history}
+    except Exception as e:
+        logging.error(f"Error getting prediction history: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/predictions/stats")
+async def get_prediction_stats():
+    """Get prediction statistics and accuracy"""
+    try:
+        stats = prediction_engine.get_stats()
+        return stats
+    except Exception as e:
+        logging.error(f"Error getting prediction stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/predictions/set-timeline")
+async def set_prediction_timeline(seconds: int):
+    """Set prediction timeline (5-120 seconds)"""
+    try:
+        prediction_engine.set_prediction_timeline(seconds)
+        return {"success": True, "timeline": prediction_engine.prediction_timeline}
+    except Exception as e:
+        logging.error(f"Error setting timeline: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/gateway/logs")
 async def get_logs(limit: int = 100):
     """Get recent log entries"""
