@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 
 # Import gateway manager
 from gateway_manager import gateway_manager
+from prediction_engine import prediction_engine
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
