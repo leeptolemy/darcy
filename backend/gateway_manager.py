@@ -6,6 +6,7 @@ from radar_connector import create_connector, RadarConnector
 from data_processor import RadarDataProcessor
 from locrypt_client import DarcyClient
 from config_manager import ConfigManager
+from prediction_engine import prediction_engine
 
 logger = logging.getLogger(__name__)
 
