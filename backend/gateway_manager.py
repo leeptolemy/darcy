@@ -114,6 +114,9 @@ class GatewayManager:
             # Store last data for display even if not published
             self.last_published_data = processed
             
+            # Feed to prediction engine
+            prediction_engine.add_detection(processed)
+            
             detection_count = processed.get('detections', 0)
             
             logger.info(f"Radar detection: {detection_count} targets")
