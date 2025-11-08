@@ -733,7 +733,11 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
           <EMSpectrumPanel colors={colors} />
         </Panel>
         
-        <Panel title="LOCRYPT DATA" colors={colors} span={4}>
+        <Panel title="AI PREDICTION" colors={colors} span={4}>
+          <AIPredictionWidget colors={colors} />
+        </Panel>
+        
+        <Panel title="LOCRYPT DATA" colors={colors} span={2}>
           <LocryptDataPanel data={data} targets={targets} colors={colors} />
         </Panel>
       </div>
