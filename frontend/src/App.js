@@ -539,7 +539,7 @@ function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway,
   );
 }
 
-function EasyModeDashboard({ status, loading, getStatusColor, getStatusText, startGateway, stopGateway, manualPublish, data, targets, hasGateway, colors }) {
+function EasyModeDashboard({ status, loading, getStatusColor, getStatusText, startGateway, stopGateway, manualPublish, data, targets, hasGateway, setSelectedTarget, colors }) {
   return (
     <div style={{ padding: 20 }}>
       {!hasGateway && (
