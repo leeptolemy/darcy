@@ -4,6 +4,7 @@ import { Activity, Radio, Cloud, Settings, PlayCircle, StopCircle, AlertCircle, 
 import { Waveform, FreqSpec, GeoMap, ThreatMatrix, LocationWidget, AltitudeChart, SpeedHistogram } from './components/widgets';
 import { RadarSweep } from './components/RadarSweep';
 import { AIPredictionWidget } from './components/AIPrediction';
+import { DangerZoneMap, LocryptShareModal } from './components/LocryptShare';
 import '@/App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
