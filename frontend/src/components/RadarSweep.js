@@ -226,7 +226,13 @@ export function RadarSweep({ colors, status, data, targets, onTargetClick }) {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <canvas ref={canvasRef} width={700} height={700} style={{ width: '100%', display: 'block' }} />
+      <canvas 
+        ref={canvasRef} 
+        width={700} 
+        height={700} 
+        style={{ width: '100%', display: 'block', cursor: onTargetClick ? 'pointer' : 'default' }}
+        onClick={handleCanvasClick}
+      />
       {data && (
         <div style={{ 
           position: 'absolute', 
