@@ -692,12 +692,12 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
           </Panel>
         </div>
 
-        {/* Center - Large Radar (spans 8 columns, 3 rows) */}
+        {/* Center - Enhanced Radar (spans 8 columns, 3 rows) */}
         <div style={{ gridColumn: 'span 8', gridRow: 'span 3', background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 4, padding: 8 }}>
           <div style={{ fontSize: 9, fontWeight: 'bold', color: colors.teal, borderBottom: '1px solid ' + colors.border, paddingBottom: 4, marginBottom: 6 }}>
-            RADAR SWEEP - 360° COVERAGE (Click targets for details)
+            ENHANCED RADAR SWEEP - 360° COVERAGE (Click targets for details)
           </div>
-          <RadarSweep colors={colors} status={status} data={data} targets={targets} onTargetClick={setSelectedTarget} />
+          <EnhancedRadar colors={colors} status={status} data={data} targets={targets} onTargetClick={setSelectedTarget} />
         </div>
 
         {/* Right Column 1 - Threat Matrix + Bearing + System */}
