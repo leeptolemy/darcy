@@ -6,27 +6,21 @@ import math
 logger = logging.getLogger(__name__)
 
 class DangerZonePredictor:
-    """Predict danger zones based on AI predictions and drone trajectories"""
-    
     def __init__(self, base_location: Dict[str, float]):
         self.base_location = base_location
         
     def calculate_danger_zones(self, predictions: List[Dict], current_data: Dict, timeline_minutes: int = 5) -> List[Dict[str, Any]]:
-        """Calculate predicted danger zones for next N minutes"""
         danger_zones = []
-        
         if current_data and current_data.get('targets'):
             for target in current_data['targets']:
                 zone = self._create_zone_from_target(target, 'IMMEDIATE', 'HIGH')
                 if zone:
                     danger_zones.append(zone)
-        
         for pred in predictions:
             if pred.get('type') == 'drone_from_direction':
                 zone = self._create_predicted_zone(pred, timeline_minutes)
                 if zone:
                     danger_zones.append(zone)
-        
         return danger_zones
         
     def _create_zone_from_target(self, target: Dict, zone_type: str, threat_level: str) -> Optional[Dict]:
@@ -41,7 +35,6 @@ class DangerZonePredictor:
             danger_radius_km = max(0.5, min(3.0, altitude_m / 300))
             return {'id': target.get('id', 'UNKNOWN'), 'type': zone_type, 'threat_level': threat_level, 'center': {'lat': target_lat, 'lon': target_lon}, 'radius_km': danger_radius_km, 'bearing_from_base': bearing, 'distance_from_base_km': range_km, 'estimated_time': 'NOW', 'details': f"{target.get('id')} at {range_str}, {bearing_str}, {target.get('altitude')}"}
         except Exception as e:
-            logger.error(f"Error creating zone: {e}")
             return None
             
     def _create_predicted_zone(self, prediction: Dict, timeline_minutes: int) -> Optional[Dict]:
@@ -54,8 +47,7 @@ class DangerZonePredictor:
             seconds_remaining = prediction.get('seconds_remaining', 0)
             eta = datetime.utcnow() + timedelta(seconds=seconds_remaining)
             return {'id': prediction['id'], 'type': 'PREDICTED', 'threat_level': 'MEDIUM', 'center': {'lat': pred_lat, 'lon': pred_lon}, 'radius_km': danger_radius_km, 'bearing_from_base': bearing, 'distance_from_base_km': predicted_range_km, 'estimated_time': eta.strftime('%H:%M:%S'), 'details': f"AI: {prediction['message']}", 'confidence': prediction.get('confidence', 50)}
-        except Exception as e:
-            logger.error(f"Error: {e}")
+        except:
             return None
             
     def _calculate_position(self, base_lat: float, base_lon: float, distance_km: float, bearing: float) -> tuple:
@@ -68,29 +60,25 @@ class DangerZonePredictor:
         return math.degrees(lat2), math.degrees(lon2)
         
     def _sector_to_bearing(self, sector: str) -> float:
-        sector_map = {'N': 0, 'NE': 45, 'E': 90, 'SE': 135, 'S': 180, 'SW': 225, 'W': 270, 'NW': 315}
-        return sector_map.get(sector, 0)
+        return {'N': 0, 'NE': 45, 'E': 90, 'SE': 135, 'S': 180, 'SW': 225, 'W': 270, 'NW': 315}.get(sector, 0)
         
     def format_for_locrypt(self, danger_zones: List[Dict], sos: bool = False, group_name: str = '') -> Dict[str, Any]:
-        message_lines = []
+        m = []
         if sos:
-            message_lines.append("⚠️⚠️⚠️ SOS - EMERGENCY DRONE ALERT ⚠️⚠️⚠️")
+            m.append("⚠️⚠️⚠️ SOS - EMERGENCY DRONE ALERT ⚠️⚠️⚠️")
         else:
-            message_lines.append("🚨 DRONE DETECTION ALERT")
-        message_lines.extend(["", f"📍 BASE: Cluj-Napoca ({self.base_location['lat']:.4f}°N, {self.base_location['lon']:.4f}°E)", f"📅 TIME: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}", "", f"🎯 DANGER ZONES: {len(danger_zones)}", ""])
-        for i, zone in enumerate(danger_zones, 1):
-            if zone['type'] == 'IMMEDIATE':
-                message_lines.append(f"{i}. 🔴 IMMEDIATE - {zone['id']}")
-            else:
-                message_lines.append(f"{i}. 🟡 PREDICTED - {zone['id']}")
-            message_lines.extend([f"   • Location: {zone['center']['lat']:.4f}°N, {zone['center']['lon']:.4f}°E", f"   • From base: {zone['distance_from_base_km']:.1f}km at {zone['bearing_from_base']:.0f}°", f"   • Danger radius: {zone['radius_km']:.1f}km", f"   • ETA: {zone['estimated_time']}"])
-            if zone.get('confidence'):
-                message_lines.append(f"   • Confidence: {zone['confidence']:.0f}%")
-            message_lines.extend([f"   • {zone['details']}", ""])
+            m.append("🚨 DRONE DETECTION ALERT")
+        m.extend(["", f"📍 BASE: Cluj-Napoca ({self.base_location['lat']:.4f}°N, {self.base_location['lon']:.4f}°E)", f"📅 {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}", "", f"🎯 DANGER ZONES: {len(danger_zones)}", ""])
+        for i, z in enumerate(danger_zones, 1):
+            m.append(f"{i}. {'🔴 IMMEDIATE' if z['type'] == 'IMMEDIATE' else '🟡 PREDICTED'} - {z['id']}")
+            m.extend([f"   • Loc: {z['center']['lat']:.4f}°N, {z['center']['lon']:.4f}°E", f"   • From base: {z['distance_from_base_km']:.1f}km at {z['bearing_from_base']:.0f}°", f"   • Danger radius: {z['radius_km']:.1f}km", f"   • ETA: {z['estimated_time']}"])
+            if z.get('confidence'):
+                m.append(f"   • Confidence: {z['confidence']:.0f}%")
+            m.extend([f"   • {z['details']}", ""])
         if sos:
-            message_lines.extend(["⚠️ IMMEDIATE ACTION REQUIRED", "⚠️ SEEK SHELTER OR AVOID AREAS"])
+            m.extend(["⚠️ IMMEDIATE ACTION REQUIRED", "⚠️ SEEK SHELTER OR AVOID AREAS"])
         else:
-            message_lines.append("ℹ️ Stay alert and monitor")
-        return {'message_text': '\n'.join(message_lines), 'danger_zones': danger_zones, 'sos': sos, 'base_location': self.base_location, 'group_name': group_name, 'timestamp': datetime.utcnow().isoformat(), 'total_zones': len(danger_zones)}
+            m.append("ℹ️ Stay alert")
+        return {'message_text': '\n'.join(m), 'danger_zones': danger_zones, 'sos': sos, 'base_location': self.base_location, 'group_name': group_name, 'timestamp': datetime.utcnow().isoformat(), 'total_zones': len(danger_zones)}
 
 danger_zone_predictor = DangerZonePredictor({'lat': 46.7712, 'lon': 23.6236})
