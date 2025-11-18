@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Activity, Radio, Cloud, Settings, PlayCircle, StopCircle, AlertCircle, CheckCircle, Send, FileText, Shield, Radar, Navigation, MapPin, Wifi, Battery, Clock, Key, Link, AlertTriangle, Share2 } from 'lucide-react';
-import { Waveform, FreqSpec, GeoMap, ThreatMatrix, LocationWidget, AltitudeChart, SpeedHistogram } from './components/widgets';
+import { Waveform, FreqSpec, ThreatMatrix, LocationWidget, SpeedHistogram } from './components/widgets';
+import { EnhancedRadar } from './components/EnhancedRadar';
+import { ClujMap } from './components/ClujMap';
+import { Altitude3D } from './components/Altitude3D';
 import { RadarSweep } from './components/RadarSweep';
 import { AIPredictionWidget } from './components/AIPrediction';
 import { DangerZoneMap, LocryptShareModal } from './components/LocryptShare';
