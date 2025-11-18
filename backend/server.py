@@ -300,6 +300,97 @@ async def get_logs(limit: int = 100):
 async def get_current_data():
     """Get current radar data for real-time display"""
     try:
+
+
+@api_router.get("/danger-zones/calculate")
+async def calculate_danger_zones(timeline_minutes: int = 5):
+    """Calculate danger zones for next N minutes"""
+    try:
+        status = gateway_manager.get_status()
+        current_data = status.get('last_published_data')
+        
+        pred_list = []
+        for pred_id, pred in prediction_engine.predictions.items():
+            pred_list.append({
+                'id': pred_id,
+                'type': pred['type'],
+                'message': pred['message'],
+                'confidence': pred['confidence'],
+                'seconds_remaining': int((pred['expected_time'] - datetime.utcnow()).total_seconds()),
+                'sector': pred.get('sector', 'N')
+            })
+        
+        zones = danger_zone_predictor.calculate_danger_zones(pred_list, current_data, timeline_minutes)
+        return {"zones": zones, "count": len(zones), "base_location": danger_zone_predictor.base_location}
+    except Exception as e:
+        logging.error(f"Error calculating danger zones: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class LocryptShareRequest(BaseModel):
+    group_id: str
+    group_name: str
+    sos: bool = False
+    radius_km: float = 5.0
+
+@api_router.post("/locrypt/share-danger-zones")
+async def share_to_locrypt(request: LocryptShareRequest):
+    """Share danger zone alert to LoCrypt group"""
+    try:
+        status = gateway_manager.get_status()
+        current_data = status.get('last_published_data')
+        
+        pred_list = []
+        for pred_id, pred in prediction_engine.predictions.items():
+            pred_list.append({
+                'id': pred_id,
+                'type': pred['type'],
+                'message': pred['message'],
+                'confidence': pred['confidence'],
+                'seconds_remaining': int((pred['expected_time'] - datetime.utcnow()).total_seconds()),
+                'sector': pred.get('sector', 'N')
+            })
+        
+        zones = danger_zone_predictor.calculate_danger_zones(pred_list, current_data, 5)
+        formatted_data = danger_zone_predictor.format_for_locrypt(zones, request.sos, request.group_name)
+        
+        logging.info(f"Sharing to LoCrypt {request.group_name}: {len(zones)} zones, SOS={request.sos}")
+        
+        doc = {
+            'id': str(uuid.uuid4()),
+            'type': 'locrypt_danger_alert',
+            'group_id': request.group_id,
+            'group_name': request.group_name,
+            'sos': request.sos,
+            'message': formatted_data['message_text'],
+            'danger_zones': zones,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        await db.locrypt_alerts.insert_one(doc)
+        
+        return {
+            "success": True, 
+            "message": f"Alert shared to {request.group_name}",
+            "zones_shared": len(zones),
+            "sos": request.sos,
+            "preview": formatted_data['message_text']
+        }
+    except Exception as e:
+        logging.error(f"Error sharing: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/locrypt/groups")
+async def get_locrypt_groups():
+    """Get available LoCrypt groups"""
+    return {
+        "groups": [
+            {"id": "grp_001", "name": "Emergency Response Team", "members": 12},
+            {"id": "grp_002", "name": "Security Operations", "members": 8},
+            {"id": "grp_003", "name": "Airport Control Tower", "members": 5},
+            {"id": "grp_004", "name": "Military Command", "members": 15},
+            {"id": "grp_005", "name": "Police Dispatch", "members": 20}
+        ]
+    }
+
         # Return last published data plus stats
         status = gateway_manager.get_status()
         return {
