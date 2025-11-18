@@ -179,6 +179,15 @@ export function RadarSweep({ colors, status, data, targets, onTargetClick }) {
           const by = cy + br * Math.sin(ba);
           const sz = Math.max(10, Math.min(18, 22 - (alt / 50)));
           const thr = rng < 5 ? 'HIGH' : rng < 20 ? 'MEDIUM' : 'LOW';
+          
+          // Store position for click detection
+          targetPositionsRef.current.push({
+            target: t,
+            x: bx,
+            y: by,
+            radius: sz + 25
+          });
+          
           drawDrone(bx, by, sz, t, thr);
         }
       });
