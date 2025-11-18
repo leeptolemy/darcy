@@ -79,6 +79,9 @@ export function RadarSweep({ colors, status, data, targets, onTargetClick }) {
     };
 
     const draw = () => {
+      // Clear target positions for new frame
+      targetPositionsRef.current = [];
+      
       ctx.fillStyle = colors.surface;
       ctx.fillRect(0, 0, w, h);
       
