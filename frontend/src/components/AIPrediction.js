@@ -55,7 +55,31 @@ export function AIPredictionWidget({ colors }) {
       </div>
       <div style={{ marginBottom: 6 }}>
         <div style={{ fontSize: 7, fontWeight: 'bold', color: colors.textMuted, marginBottom: 2 }}>ACTIVE:</div>
-        {predictions.length === 0 ? <div style={{ color: colors.textMuted, fontSize: 7 }}>No predictions</div> : predictions.map((p, i) => <div key={i} style={{ marginBottom: 3, padding: 3, background: colors.teal + '10', border: '1px solid ' + colors.teal, borderRadius: 2 }}><div style={{ fontWeight: 'bold', color: colors.teal, fontSize: 7 }}>[{p.id}]</div><div style={{ color: colors.text, fontSize: 7, marginBottom: 2 }}>{p.message}</div><div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 6, color: colors.textMuted }}><span>CONF: {p.confidence}%</span><span><Clock size={6} style={{ display: 'inline', marginRight: 2 }} />{p.seconds_remaining}s</span></div></div>)}
+        {predictions.length === 0 ? (
+          <div style={{ color: colors.textMuted, fontSize: 7 }}>No predictions</div>
+        ) : (
+          <div style={{ maxHeight: 80, overflowY: 'auto', overflowX: 'hidden' }}>
+            {predictions.map((p, i) => (
+              <div key={i} style={{ 
+                marginBottom: 3, 
+                padding: 3, 
+                background: colors.teal + '10', 
+                border: '1px solid ' + colors.teal, 
+                borderRadius: 2 
+              }}>
+                <div style={{ fontWeight: 'bold', color: colors.teal, fontSize: 7 }}>[{p.id}]</div>
+                <div style={{ color: colors.text, fontSize: 7, marginBottom: 2 }}>{p.message}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 6, color: colors.textMuted }}>
+                  <span>CONF: {p.confidence}%</span>
+                  <span>
+                    <Clock size={6} style={{ display: 'inline', marginRight: 2 }} />
+                    {p.seconds_remaining}s
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div>
         <div style={{ fontSize: 7, fontWeight: 'bold', color: colors.textMuted, marginBottom: 2 }}>HISTORY:</div>
