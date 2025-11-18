@@ -224,6 +224,113 @@ class DARCYAPITester:
             self.tests_run += 1
             return False
 
+    def test_ai_predictions_active(self):
+        """Test getting active AI predictions"""
+        success, response = self.run_test(
+            "Get Active AI Predictions",
+            "GET",
+            "predictions/active",
+            200,
+            check_response=lambda r: 'predictions' in r
+        )
+        if success:
+            print(f"   Active Predictions: {len(response.get('predictions', []))}")
+        return success, response
+
+    def test_ai_predictions_history(self):
+        """Test getting AI prediction history"""
+        success, response = self.run_test(
+            "Get AI Prediction History",
+            "GET",
+            "predictions/history?limit=5",
+            200,
+            check_response=lambda r: 'history' in r
+        )
+        if success:
+            print(f"   History Count: {len(response.get('history', []))}")
+        return success
+
+    def test_ai_predictions_stats(self):
+        """Test getting AI prediction statistics"""
+        success, response = self.run_test(
+            "Get AI Prediction Stats",
+            "GET",
+            "predictions/stats",
+            200,
+            check_response=lambda r: 'accuracy' in r and 'total_predictions' in r
+        )
+        if success:
+            print(f"   Accuracy: {response.get('accuracy', 0):.1f}%")
+            print(f"   Total Predictions: {response.get('total_predictions', 0)}")
+            print(f"   Timeline: {response.get('timeline_seconds', 0)}s")
+        return success, response
+
+    def test_set_prediction_timeline(self):
+        """Test setting prediction timeline"""
+        success, response = self.run_test(
+            "Set Prediction Timeline",
+            "POST",
+            "predictions/set-timeline?seconds=60",
+            200,
+            check_response=lambda r: 'success' in r and 'timeline' in r
+        )
+        if success:
+            print(f"   Timeline set to: {response.get('timeline')}s")
+        return success
+
+    def test_danger_zones_calculate(self):
+        """Test danger zone calculation"""
+        success, response = self.run_test(
+            "Calculate Danger Zones",
+            "GET",
+            "danger-zones/calculate?timeline_minutes=5",
+            200,
+            check_response=lambda r: 'zones' in r and 'base_location' in r
+        )
+        if success:
+            print(f"   Danger Zones: {response.get('count', 0)}")
+            base = response.get('base_location', {})
+            print(f"   Base Location: {base.get('lat', 0):.4f}°N, {base.get('lon', 0):.4f}°E")
+            zones = response.get('zones', [])
+            for zone in zones[:3]:  # Show first 3 zones
+                print(f"   - {zone.get('id')}: {zone.get('type')} at {zone.get('distance_from_base_km', 0):.1f}km")
+        return success, response
+
+    def test_locrypt_groups(self):
+        """Test getting LoCrypt groups"""
+        success, response = self.run_test(
+            "Get LoCrypt Groups",
+            "GET",
+            "locrypt/groups",
+            200,
+            check_response=lambda r: 'groups' in r
+        )
+        if success:
+            print(f"   Available Groups: {len(response.get('groups', []))}")
+            for group in response.get('groups', [])[:3]:
+                print(f"   - {group.get('name')}: {group.get('members')} members")
+        return success, response
+
+    def test_locrypt_share(self):
+        """Test sharing danger zones to LoCrypt"""
+        success, response = self.run_test(
+            "Share Danger Zones to LoCrypt",
+            "POST",
+            "locrypt/share-danger-zones",
+            200,
+            data={
+                "group_id": "grp_001",
+                "group_name": "Emergency Response Team",
+                "sos": False,
+                "radius_km": 5.0
+            },
+            check_response=lambda r: 'success' in r and 'zones_shared' in r
+        )
+        if success:
+            print(f"   Zones Shared: {response.get('zones_shared', 0)}")
+            print(f"   SOS Mode: {response.get('sos', False)}")
+        return success
+
 def main():
     print("=" * 60)
     print("DARCY DRONE DETECTION RADAR - BACKEND API TESTS")
