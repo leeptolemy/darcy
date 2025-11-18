@@ -202,6 +202,28 @@ export function RadarSweep({ colors, status, data, targets, onTargetClick }) {
     return () => { if (aid) cancelAnimationFrame(aid); };
   }, [colors, status, targets]);
 
+  const handleCanvasClick = (event) => {
+    if (!onTargetClick) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clickX = (event.clientX - rect.left) * scaleX;
+    const clickY = (event.clientY - rect.top) * scaleY;
+    
+    // Check if click is near any target
+    for (const pos of targetPositionsRef.current) {
+      const dist = Math.sqrt(Math.pow(clickX - pos.x, 2) + Math.pow(clickY - pos.y, 2));
+      if (dist <= pos.radius) {
+        onTargetClick(pos.target);
+        return;
+      }
+    }
+  };
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <canvas ref={canvasRef} width={700} height={700} style={{ width: '100%', display: 'block' }} />
