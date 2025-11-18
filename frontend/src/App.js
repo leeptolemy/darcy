@@ -160,6 +160,14 @@ function App() {
         />
       )}
 
+      {showLocryptShare && (
+        <LocryptShareModal 
+          show={showLocryptShare}
+          onClose={() => setShowLocryptShare(false)}
+          colors={COLORS}
+        />
+      )}
+
       <div style={{ display: 'flex', height: 'calc(100vh - 76px)' }}>
         <Sidebar activeView={activeView} setActiveView={setActiveView} setShowSetup={setShowSetup} status={status} colors={COLORS} />
         
