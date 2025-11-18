@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 
-export function RadarSweep({ colors, status, data, targets }) {
+export function RadarSweep({ colors, status, data, targets, onTargetClick }) {
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
+  const targetPositionsRef = useRef([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
