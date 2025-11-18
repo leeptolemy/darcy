@@ -196,6 +196,7 @@ function App() {
                 data={data}
                 targets={targets}
                 hasGateway={hasGateway}
+                setSelectedTarget={setSelectedTarget}
                 colors={COLORS}
               />
             ) : (
@@ -211,6 +212,7 @@ function App() {
                 events={events}
                 logs={logs}
                 hasGateway={hasGateway}
+                setSelectedTarget={setSelectedTarget}
                 colors={COLORS}
               />
             )
