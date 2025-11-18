@@ -35,7 +35,8 @@ function App() {
   const [gatewayToken, setGatewayToken] = useState('');
   const [gatewayUrl, setGatewayUrl] = useState('');
   const [viewMode, setViewMode] = useState('standard');
-  const [showLocryptShare, setShowLocryptShare] = useState(false); // 'standard' or 'easy'
+  const [showLocryptShare, setShowLocryptShare] = useState(false);
+  const [selectedTarget, setSelectedTarget] = useState(null); // 'standard' or 'easy'
 
   useEffect(() => {
     fetchData();
