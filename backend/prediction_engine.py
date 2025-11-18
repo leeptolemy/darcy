@@ -61,6 +61,18 @@ class PredictionEngine:
         """Check if prediction matches actual data"""
         pred_type = prediction['type']
         
+        # Calculate difficulty factor based on how far ahead we predicted
+        timeline_used = prediction.get('timeline_seconds', 30)
+        difficulty_multiplier = 1.0 + (timeline_used - 30) / 60  # Harder as timeline increases
+        
+        # Add randomness based on difficulty (longer timeline = more chance to be wrong)
+        import random
+        random_failure_chance = (timeline_used - 5) / 200  # 0% at 5s, 57.5% at 120s
+        if random.random() < random_failure_chance:
+            # Randomly fail some predictions at longer timelines
+            logger.info(f"Prediction {prediction['id']} failed due to timeline difficulty")
+            return False
+        
         if pred_type == 'drone_from_direction':
             # Check if drone appeared from predicted direction
             predicted_bearing = prediction['bearing']
@@ -70,24 +82,53 @@ class PredictionEngine:
                 target_bearing = target.get('bearing', '000°')
                 target_sector = self._get_sector_from_bearing(target_bearing)
                 
-                if target_sector == predicted_sector:
-                    return True
+                # At longer timelines, allow slight sector variation
+                if timeline_used > 45:
+                    # Allow adjacent sectors too (e.g., E and SE both count for E prediction)
+                    adjacent_sectors = self._get_adjacent_sectors(predicted_sector)
+                    if target_sector in adjacent_sectors or target_sector == predicted_sector:
+                        return True
+                else:
+                    if target_sector == predicted_sector:
+                        return True
             return False
             
         elif pred_type == 'wave_incoming':
             # Check if multiple detections occurred
-            if actual_data.get('detections', 0) >= prediction.get('min_detections', 2):
+            expected_count = prediction.get('min_detections', 2)
+            actual_count = actual_data.get('detections', 0)
+            
+            # At longer timelines, be more lenient (±1)
+            tolerance = 1 if timeline_used > 45 else 0
+            if abs(actual_count - expected_count) <= tolerance and actual_count >= 2:
                 return True
             return False
             
         elif pred_type == 'sector_activity':
             # Check if activity in predicted sector
+            # At longer timelines, this becomes less reliable
+            if random.random() < 0.5 and timeline_used > 45:
+                return False  # 50% fail rate at long timelines
             predicted_sector = prediction['sector']
             current_sectors = [self._get_sector_from_bearing(t.get('bearing', '000°')) 
                               for t in actual_data.get('targets', [])]
             return predicted_sector in current_sectors
             
         return False
+        
+    def _get_adjacent_sectors(self, sector: str) -> List[str]:
+        """Get adjacent sectors for leniency at long timelines"""
+        all_sectors = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+        try:
+            idx = all_sectors.index(sector)
+            # Return sector and neighbors
+            return [
+                all_sectors[(idx - 1) % 8],
+                sector,
+                all_sectors[(idx + 1) % 8]
+            ]
+        except:
+            return [sector]
         
     def _generate_predictions(self):
         """Generate predictions based on detected patterns"""
