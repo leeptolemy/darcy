@@ -102,7 +102,6 @@
   "build": {
     "appId": "com.schonegroup.darcy",
     "productName": "DARCY Radar Gateway",
-    "electronDist": "../node_modules/electron/dist",
     "files": [
       "../electron.js",
       "../preload.js",
