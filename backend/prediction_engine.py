@@ -150,7 +150,8 @@ class PredictionEngine:
                 'confidence': pattern['confidence'],
                 'created_at': datetime.utcnow(),
                 'expected_time': datetime.utcnow() + timedelta(seconds=self.prediction_timeline),
-                'pattern_data': pattern
+                'pattern_data': pattern,
+                'timeline_seconds': self.prediction_timeline  # Store timeline for difficulty calculation
             }
             
             # Add pattern-specific data
