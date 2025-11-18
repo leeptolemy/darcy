@@ -144,6 +144,7 @@ function App() {
         hasGateway={hasGateway}
         viewMode={viewMode}
         setViewMode={setViewMode}
+        setShowLocryptShare={setShowLocryptShare}
         colors={COLORS} 
       />
 
