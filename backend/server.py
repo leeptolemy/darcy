@@ -400,18 +400,6 @@ async def get_locrypt_groups():
         ]
     }
 
-        # Return last published data plus stats
-        status = gateway_manager.get_status()
-        return {
-            "current_data": status.get('last_published_data'),
-            "stats": status.get('stats'),
-            "is_running": status.get('is_running'),
-            "radar_status": status.get('radar_status')
-        }
-    except Exception as e:
-        logging.error(f"Error getting current data: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
 @api_router.post("/gateway/toggle-mock")
 async def toggle_mock_mode(enable: bool = True):
     """Toggle mock radar mode"""
