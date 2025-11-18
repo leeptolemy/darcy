@@ -684,8 +684,8 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
           <Panel title="BATTERY" colors={colors}>
             <BatteryPanel targets={targets} colors={colors} />
           </Panel>
-          <Panel title="ALTITUDE" colors={colors}>
-            <AltitudeChart colors={colors} targets={targets} />
+          <Panel title="ALTITUDE 3D" colors={colors}>
+            <Altitude3D colors={colors} targets={targets} />
           </Panel>
           <Panel title="WEATHER" colors={colors}>
             <WeatherPanel colors={colors} />
