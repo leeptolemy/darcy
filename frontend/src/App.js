@@ -171,6 +171,14 @@ function App() {
         />
       )}
 
+      {selectedTarget && (
+        <TargetDetailModal
+          target={selectedTarget}
+          onClose={() => setSelectedTarget(null)}
+          colors={COLORS}
+        />
+      )}
+
       <div style={{ display: 'flex', height: 'calc(100vh - 76px)' }}>
         <Sidebar activeView={activeView} setActiveView={setActiveView} setShowSetup={setShowSetup} status={status} colors={COLORS} />
         
