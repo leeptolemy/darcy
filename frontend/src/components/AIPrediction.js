@@ -51,7 +51,15 @@ export function AIPredictionWidget({ colors }) {
       <div style={{ marginBottom: 6, padding: 4, background: colors.primary, borderRadius: 2 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2, fontSize: 7, color: colors.textMuted }}><span>TIMELINE</span><span>{timeline}s</span></div>
         <input type="range" min="5" max="120" step="5" value={timeline} onChange={(e) => updateTimeline(parseInt(e.target.value))} style={{ width: '100%', height: 4 }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 6, color: colors.textMuted, marginTop: 2 }}>
+          <span>5s (EASY)</span>
+          <span>60s</span>
+          <span>120s (HARD)</span>
+        </div>
         {stats?.recommended_timeline && stats.recommended_timeline !== timeline && <div style={{ fontSize: 6, color: colors.warning, marginTop: 2 }}>Rec: {stats.recommended_timeline}s</div>}
+        <div style={{ fontSize: 6, color: timeline < 30 ? colors.success : timeline < 60 ? colors.teal : colors.warning, marginTop: 2, fontWeight: 'bold' }}>
+          DIFFICULTY: {timeline < 30 ? 'EASY' : timeline < 60 ? 'MEDIUM' : 'HARD'}
+        </div>
       </div>
       <div style={{ marginBottom: 6 }}>
         <div style={{ fontSize: 7, fontWeight: 'bold', color: colors.textMuted, marginBottom: 2 }}>ACTIVE:</div>
