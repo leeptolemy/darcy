@@ -115,7 +115,7 @@ export function TargetDetailModal({ target, onClose, colors }) {
             <DataRow label="Max Speed" value="72 km/h (20 m/s)" colors={colors} />
             <DataRow label="Max Range" value="7km (advertised)" colors={colors} />
             <DataRow label="Flight Time" value="~30 min (typical)" colors={colors} />
-            <DataRow label="Camera" value="20MP 1\" sensor, 4K video" colors={colors} />
+            <DataRow label="Camera" value='20MP 1" sensor, 4K video' colors={colors} />
             <DataRow label="Price" value="~$1,589 USD" colors={colors} />
           </Section>
 
