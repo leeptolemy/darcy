@@ -374,6 +374,25 @@ def main():
     print("-" * 60)
     tester.test_mock_data_generation()
     
+    # Test AI Predictions
+    print("\n🧠 TESTING AI PREDICTION ENGINE")
+    print("-" * 60)
+    tester.test_ai_predictions_active()
+    tester.test_ai_predictions_history()
+    tester.test_ai_predictions_stats()
+    tester.test_set_prediction_timeline()
+    
+    # Test Danger Zones
+    print("\n🗺️  TESTING DANGER ZONE CALCULATIONS")
+    print("-" * 60)
+    tester.test_danger_zones_calculate()
+    
+    # Test LoCrypt Integration
+    print("\n📱 TESTING LOCRYPT INTEGRATION")
+    print("-" * 60)
+    tester.test_locrypt_groups()
+    tester.test_locrypt_share()
+    
     # Stop gateway
     print("\n🛑 TESTING GATEWAY STOP")
     print("-" * 60)
