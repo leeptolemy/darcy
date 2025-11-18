@@ -285,6 +285,27 @@ function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGatewa
             <Link size={12} />
             <span>{hasGateway ? 'GATEWAY OK' : 'SETUP GATEWAY'}</span>
           </button>
+          <button 
+            onClick={() => setShowLocryptShare(true)} 
+            style={{ 
+              marginLeft: 10, 
+              padding: '6px 12px', 
+              borderRadius: 3, 
+              background: colors.warning + '20', 
+              border: '1px solid ' + colors.warning, 
+              display: 'flex', 
+              gap: 6, 
+              alignItems: 'center', 
+              fontSize: 9, 
+              cursor: 'pointer', 
+              color: colors.warning, 
+              fontWeight: 'bold' 
+            }} 
+            data-testid="locrypt-share-btn"
+          >
+            <Share2 size={12} />
+            <span>SHARE TO LOCRYPT</span>
+          </button>
         </div>
         <div style={{ display: 'flex', gap: 16, fontSize: 9, color: colors.textMuted }}>
           <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
