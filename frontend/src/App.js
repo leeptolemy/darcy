@@ -587,8 +587,8 @@ function EasyModeDashboard({ status, loading, getStatusColor, getStatusText, sta
         </div>
 
         {/* Center - Radar */}
-        <TacticalCard title="RADAR SWEEP - 360° COVERAGE" colors={colors}>
-          <RadarSweep colors={colors} status={status} data={data} targets={targets} />
+        <TacticalCard title="RADAR SWEEP - 360° COVERAGE (Click targets)" colors={colors}>
+          <RadarSweep colors={colors} status={status} data={data} targets={targets} onTargetClick={setSelectedTarget} />
         </TacticalCard>
 
         {/* Right Column */}
