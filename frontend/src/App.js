@@ -6,9 +6,6 @@ import { EnhancedRadar } from './components/EnhancedRadar';
 import { ClujMap } from './components/ClujMap';
 import { Altitude3D } from './components/Altitude3D';
 import { RadarSweep } from './components/RadarSweep';
-import { AIPredictionWidget } from './components/AIPrediction';
-import { DangerZoneMap, LocryptShareModal } from './components/LocryptShare';
-import { TargetDetailModal } from './components/TargetDetailModal';
 import '@/App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
