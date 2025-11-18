@@ -1,7 +1,11 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "darcy-radar-gateway",
+  "version": "1.0.0",
+  "description": "DARCY Drone Detection Radar Desktop Application - Military-grade tactical radar system with AI predictions",
+  "author": "Schone Group",
   "private": true,
+  "main": "../electron.js",
+  "homepage": "./",
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.8",
