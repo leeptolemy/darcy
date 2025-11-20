@@ -600,7 +600,7 @@ function EasyModeDashboard({ status, loading, getStatusColor, getStatusText, sta
             <TargetListPanel targets={targets} colors={colors} />
           </TacticalCard>
           <TacticalCard title="GEOGRAPHIC MAP" colors={colors}>
-            <GeoMap colors={colors} targets={targets} />
+            <ClujMap colors={colors} targets={targets} />
           </TacticalCard>
           <TacticalCard title="SIGNAL STRENGTH" colors={colors}>
             <SignalStrengthPanel data={data} colors={colors} />
