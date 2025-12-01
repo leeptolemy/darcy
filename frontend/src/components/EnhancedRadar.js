@@ -167,11 +167,12 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
         ctx.fillText(deg.toString(), x, y);
       }
       
-      // Range labels
+      // Range labels (adjust based on zoom)
       ctx.fillStyle = colors.teal;
       ctx.font = 'bold 11px monospace';
+      const maxRange = radarZoom || 50;
       for (let i = 1; i <= 5; i++) {
-        ctx.fillText((i * 10) + 'km', cx + 10, cy - (r / 5) * i + 5);
+        ctx.fillText((i * maxRange / 5) + 'km', cx + 10, cy - (r / 5) * i + 5);
       }
       
       // Compass
