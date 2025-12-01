@@ -136,6 +136,22 @@ function App() {
   const targets = data?.targets || [];
   const hasGateway = config?.darcy?.gateway_token && config?.darcy?.gateway_token.length > 10;
 
+  const [predictions, setPredictions] = useState([]);
+
+  useEffect(() => {
+    const fetchPredictions = async () => {
+      try {
+        const response = await axios.get(`${API}/predictions/active`);
+        setPredictions(response.data.predictions || []);
+      } catch (e) {}
+    };
+    if (status?.is_running) {
+      fetchPredictions();
+      const interval = setInterval(fetchPredictions, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [status?.is_running]);
+
   useEffect(() => {
     if (targets.length > 0) {
       targets.forEach(t => addEvent('DETECT', `${t.id} @ ${t.range}`));
