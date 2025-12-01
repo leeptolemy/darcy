@@ -251,7 +251,7 @@ function App() {
   );
 }
 
-function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGateway, viewMode, setViewMode, setShowLocryptShare, colors }) {
+function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGateway, viewMode, setViewMode, setShowLocryptShare, showPredictions, setShowPredictions, colors }) {
   return (
     <div style={{ background: colors.surface, borderBottom: '2px solid ' + colors.teal, boxShadow: '0 0 20px rgba(0, 217, 255, 0.3)', padding: '8px 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
