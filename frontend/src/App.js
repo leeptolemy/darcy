@@ -42,7 +42,8 @@ function App() {
   const [showLocryptShare, setShowLocryptShare] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState(null);
   const [showPredictions, setShowPredictions] = useState(true);
-  const [selectedPrediction, setSelectedPrediction] = useState(null); // 'standard' or 'easy'
+  const [selectedPrediction, setSelectedPrediction] = useState(null);
+  const [radarZoom, setRadarZoom] = useState(50); // 50km, 20km, or 5km // 'standard' or 'easy'
 
   useEffect(() => {
     fetchData();
