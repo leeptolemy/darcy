@@ -209,13 +209,14 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
 
       // Draw yellow prediction ghosts (if enabled and confidence > 80%)
       if (showPredictions && predictions) {
+        const maxRange = radarZoom || 50;
         predictions.forEach(pred => {
           if (pred.show_on_radar && pred.confidence >= 80) {
             const bm = pred.bearing?.match(/([\d.]+)/);
             if (bm) {
               const b = parseFloat(bm[1]);
               const rng = pred.predicted_range_km || 20;
-              const br = (rng / 50) * r;
+              const br = (rng / maxRange) * r;  // Scale based on zoom
               const ba = (b - 90) * (Math.PI / 180);
               const px = cx + br * Math.cos(ba);
               const py = cy + br * Math.sin(ba);
