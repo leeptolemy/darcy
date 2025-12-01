@@ -548,7 +548,7 @@ function Sidebar({ activeView, setActiveView, setShowSetup, status, colors }) {
   );
 }
 
-function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, setSelectedTarget, colors }) {
+function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, setSelectedTarget, setSelectedPrediction, predictions, showPredictions, colors }) {
   return (
     <div style={{ padding: 8 }}>
       {!hasGateway && (
