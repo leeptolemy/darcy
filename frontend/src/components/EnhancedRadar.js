@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-export function EnhancedRadar({ colors, status, data, targets, onTargetClick, showPredictions }) {
+export function EnhancedRadar({ colors, status, data, targets, predictions, showPredictions, onTargetClick, onPredictionClick }) {
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
   const targetPositionsRef = useRef([]);
-  const [predictions, setPredictions] = useState([]);
-  const [validatedPredictions, setValidatedPredictions] = useState([]);
+  const predictionPositionsRef = useRef([]);
+  const [validations, setValidations] = useState([]);
 
   // Fetch predictions every 3 seconds
   useEffect(() => {
