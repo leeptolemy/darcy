@@ -213,7 +213,7 @@ class PredictionEngine:
                     'type': 'wave_incoming',
                     'message': 'Detection wave incoming',
                     'min_detections': recent_counts[-1] + 1,
-                    'confidence': 75
+                    'confidence': 85  # Increased for testing visibility
                 })
         
         # Pattern 3: Time-based pattern
