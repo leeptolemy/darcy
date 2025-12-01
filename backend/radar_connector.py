@@ -365,6 +365,7 @@ class MockRadarConnector(RadarConnector):
         
     def _update_drone_positions(self):
         """Move all active drones closer to base (realistic movement)"""
+        import random
         for drone_id, drone in list(self.active_drones.items()):
             # Move closer based on speed
             # Speed in kts, convert to km per update (every 2-4 seconds)
