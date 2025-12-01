@@ -312,6 +312,7 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
       });
 
       // Draw targets
+      const maxRange = radarZoom || 50;
       targets.forEach(t => {
         const bm = t.bearing?.match(/([\d.]+)/);
         const rm = t.range?.match(/([\d.]+)/);
@@ -321,7 +322,7 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
           const b = parseFloat(bm[1]);
           const rng = parseFloat(rm[1]);
           const alt = am ? parseFloat(am[1]) : 100;
-          const br = (rng / 50) * r;
+          const br = (rng / maxRange) * r;  // Scale based on zoom
           const ba = (b - 90) * (Math.PI / 180);
           const bx = cx + br * Math.cos(ba);
           const by = cy + br * Math.sin(ba);
