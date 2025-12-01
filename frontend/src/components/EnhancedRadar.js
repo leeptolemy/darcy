@@ -336,7 +336,7 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
 
     draw();
     return () => { if (aid) cancelAnimationFrame(aid); };
-  }, [colors, status, targets]);
+  }, [colors, status, targets, predictions, showPredictions, validations]);
 
   const handleClick = (e) => {
     if (!onTargetClick) return;
