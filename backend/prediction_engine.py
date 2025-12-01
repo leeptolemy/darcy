@@ -227,7 +227,7 @@ class PredictionEngine:
                 'type': 'sector_activity',
                 'sector': 'MULTIPLE',
                 'message': f'High activity period ({hour}:00-{hour+1}:00)',
-                'confidence': 65
+                'confidence': 82  # Increased for testing visibility
             })
         
         # Limit to 3 predictions at a time
