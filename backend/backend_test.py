@@ -225,7 +225,7 @@ class DARCYAPITester:
             return False
 
     def test_ai_predictions_active(self):
-        """Test getting active AI predictions"""
+        """Test getting active AI predictions with spatial coordinates"""
         success, response = self.run_test(
             "Get Active AI Predictions",
             "GET",
@@ -234,11 +234,40 @@ class DARCYAPITester:
             check_response=lambda r: 'predictions' in r
         )
         if success:
-            print(f"   Active Predictions: {len(response.get('predictions', []))}")
+            predictions = response.get('predictions', [])
+            print(f"   Active Predictions: {len(predictions)}")
+            
+            # Validate NEW features: spatial coordinates, confidence filtering, countdown
+            for pred in predictions[:3]:  # Check first 3
+                print(f"\n   Prediction {pred.get('id')}:")
+                print(f"     - Message: {pred.get('message')}")
+                print(f"     - Confidence: {pred.get('confidence')}%")
+                print(f"     - Seconds Remaining: {pred.get('seconds_remaining')}s")
+                print(f"     - Bearing: {pred.get('bearing')}")
+                print(f"     - Predicted Lat: {pred.get('predicted_lat')}")
+                print(f"     - Predicted Lon: {pred.get('predicted_lon')}")
+                print(f"     - Predicted Range: {pred.get('predicted_range_km')}km")
+                print(f"     - Show on Radar: {pred.get('show_on_radar')} (should be True if confidence >= 80)")
+                print(f"     - Show Countdown: {pred.get('show_countdown')} (should be True if ≤10s AND >=80% confidence)")
+                
+                # Validate show_on_radar logic
+                if pred.get('confidence', 0) >= 80:
+                    if not pred.get('show_on_radar'):
+                        print(f"     ⚠️  WARNING: Confidence >= 80% but show_on_radar is False")
+                
+                # Validate show_countdown logic
+                if pred.get('seconds_remaining', 999) <= 10 and pred.get('confidence', 0) >= 80:
+                    if not pred.get('show_countdown'):
+                        print(f"     ⚠️  WARNING: ≤10s AND >=80% but show_countdown is False")
+                
+                # Check spatial coordinates exist
+                if pred.get('predicted_lat') is None or pred.get('predicted_lon') is None:
+                    print(f"     ⚠️  WARNING: Missing spatial coordinates")
+        
         return success, response
 
     def test_ai_predictions_history(self):
-        """Test getting AI prediction history"""
+        """Test getting AI prediction history with spatial accuracy"""
         success, response = self.run_test(
             "Get AI Prediction History",
             "GET",
@@ -247,8 +276,22 @@ class DARCYAPITester:
             check_response=lambda r: 'history' in r
         )
         if success:
-            print(f"   History Count: {len(response.get('history', []))}")
-        return success
+            history = response.get('history', [])
+            print(f"   History Count: {len(history)}")
+            
+            # Check for spatial_accuracy in validated predictions
+            for pred in history[:3]:  # Check first 3
+                print(f"\n   History {pred.get('id')}:")
+                print(f"     - Result: {'TRUE' if pred.get('result') else 'FALSE'}")
+                print(f"     - Confidence: {pred.get('confidence')}%")
+                print(f"     - Spatial Accuracy: {pred.get('spatial_accuracy', 0)}%")
+                print(f"     - Show Validation: {pred.get('show_validation')} (green checkmark if TRUE)")
+                
+                # Validate spatial_accuracy exists for TRUE predictions
+                if pred.get('result') and pred.get('spatial_accuracy', 0) == 0:
+                    print(f"     ⚠️  WARNING: TRUE prediction but spatial_accuracy is 0")
+        
+        return success, response
 
     def test_ai_predictions_stats(self):
         """Test getting AI prediction statistics"""
