@@ -206,6 +206,109 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
         angleRef.current += 0.03;
       }
 
+      // Draw yellow prediction ghosts (if enabled and confidence > 80%)
+      if (showPredictions && predictions) {
+        predictions.forEach(pred => {
+          if (pred.show_on_radar && pred.confidence >= 80) {
+            const bm = pred.bearing?.match(/([\d.]+)/);
+            if (bm) {
+              const b = parseFloat(bm[1]);
+              const rng = pred.predicted_range_km || 20;
+              const br = (rng / 50) * r;
+              const ba = (b - 90) * (Math.PI / 180);
+              const px = cx + br * Math.cos(ba);
+              const py = cy + br * Math.sin(ba);
+              const sz = 12;
+              
+              predictionPositionsRef.current.push({ prediction: pred, x: px, y: py, radius: sz + 25 });
+              
+              // Draw yellow prediction
+              ctx.save();
+              const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.7;
+              ctx.shadowBlur = 20 * pulse;
+              ctx.shadowColor = '#FFD700';
+              
+              // Dashed yellow rings
+              [20, 14, 10].forEach((rs, idx) => {
+                ctx.strokeStyle = '#FFD700' + (idx === 0 ? '40' : idx === 1 ? '70' : '');
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.arc(px, py, sz + rs, 0, Math.PI * 2);
+                ctx.stroke();
+              });
+              ctx.setLineDash([]);
+              
+              // Yellow filled center
+              ctx.fillStyle = '#FFD700';
+              ctx.beginPath();
+              ctx.arc(px, py, sz, 0, Math.PI * 2);
+              ctx.fill();
+              
+              // Question mark
+              ctx.fillStyle = colors.primary;
+              ctx.font = 'bold 12px monospace';
+              ctx.textAlign = 'center';
+              ctx.fillText('?', px, py + 4);
+              
+              ctx.shadowBlur = 0;
+              
+              // Countdown if ≤ 10s
+              if (pred.show_countdown && pred.seconds_remaining <= 10) {
+                const boxX = px + 25, boxY = py - 20, boxW = 60, boxH = 30;
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.95)';
+                ctx.fillRect(boxX, boxY, boxW, boxH);
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(boxX, boxY, boxW, boxH);
+                ctx.fillStyle = colors.primary;
+                ctx.font = 'bold 9px monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText(pred.id, boxX + 4, boxY + 12);
+                ctx.font = 'bold 11px monospace';
+                ctx.fillText(`⏰ ${pred.seconds_remaining}s`, boxX + 4, boxY + 24);
+              }
+              
+              ctx.restore();
+            }
+          }
+        });
+      }
+      
+      // Draw validation checkmarks
+      validations.forEach(val => {
+        if (Date.now() - val.validatedAt < 5000) {
+          const bm = val.bearing?.match(/([\d.]+)/);
+          if (bm) {
+            const b = parseFloat(bm[1]);
+            const rng = 20;
+            const br = (rng / 50) * r;
+            const ba = (b - 90) * (Math.PI / 180);
+            const vx = cx + br * Math.cos(ba);
+            const vy = cy + br * Math.sin(ba);
+            
+            // Green checkmark
+            ctx.save();
+            const pulse = Math.sin(Date.now() / 200) * 0.2 + 0.8;
+            ctx.shadowBlur = 30 * pulse;
+            ctx.shadowColor = colors.success;
+            ctx.fillStyle = colors.success;
+            ctx.beginPath();
+            ctx.arc(vx, vy, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = colors.primary;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(vx - 8, vy);
+            ctx.lineTo(vx - 2, vy + 6);
+            ctx.lineTo(vx + 8, vy - 6);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.restore();
+          }
+        }
+      });
+
       // Draw targets
       targets.forEach(t => {
         const bm = t.bearing?.match(/([\d.]+)/);
