@@ -305,6 +305,27 @@ function Header({ status, getStatusColor, getStatusText, setShowSetup, hasGatewa
             <span>{viewMode === 'standard' ? 'STANDARD' : 'EASY'} MODE</span>
           </button>
           <button 
+            onClick={() => setShowPredictions(!showPredictions)}
+            style={{ 
+              marginLeft: 10, 
+              padding: '6px 12px', 
+              borderRadius: 3, 
+              background: showPredictions ? '#FFD700' + '20' : colors.textMuted + '20', 
+              border: '1px solid ' + (showPredictions ? '#FFD700' : colors.textMuted), 
+              display: 'flex', 
+              gap: 6, 
+              alignItems: 'center', 
+              fontSize: 9, 
+              cursor: 'pointer', 
+              color: showPredictions ? '#FFD700' : colors.textMuted, 
+              fontWeight: 'bold' 
+            }} 
+            data-testid="predictions-toggle"
+          >
+            <TrendingUp size={12} />
+            <span>PREDICTIONS {showPredictions ? 'ON' : 'OFF'}</span>
+          </button>
+          <button 
             onClick={() => setShowSetup(true)} 
             style={{ 
               marginLeft: 10, 
