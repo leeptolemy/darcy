@@ -221,17 +221,73 @@ class PredictionEngine:
         logger.info(f"Prediction timeline set to {self.prediction_timeline}s")
         
     def get_active_predictions(self) -> List[Dict[str, Any]]:
-        """Get all active predictions"""
+        """Get all active predictions with spatial coordinates"""
         now = datetime.utcnow()
-        return [
-            {
+        predictions_with_coords = []
+        
+        for pred_id, pred in self.predictions.items():
+            seconds_remaining = int((pred['expected_time'] - now).total_seconds())
+            
+            # Calculate predicted coordinates
+            predicted_lat, predicted_lon = self._get_prediction_coordinates(pred)
+            
+            predictions_with_coords.append({
                 'id': pred_id,
                 'message': pred['message'],
                 'confidence': pred['confidence'],
-                'seconds_remaining': int((pred['expected_time'] - now).total_seconds())
-            }
-            for pred_id, pred in self.predictions.items()
-        ]
+                'seconds_remaining': max(0, seconds_remaining),
+                'type': pred['type'],
+                'sector': pred.get('sector', 'N'),
+                'bearing': pred.get('bearing', '000°'),
+                'predicted_lat': predicted_lat,
+                'predicted_lon': predicted_lon,
+                'predicted_range_km': 20.0,  # Default prediction range
+                'show_on_radar': pred['confidence'] >= 80,  # Only show if confidence > 80%
+                'show_countdown': seconds_remaining <= 10 and pred['confidence'] >= 80  # Countdown only if ≤10s and >80%
+            })
+        
+        return predictions_with_coords
+        
+    def _get_prediction_coordinates(self, prediction: Dict) -> tuple:
+        """Calculate predicted GPS coordinates"""
+        # Base location (Cluj-Napoca)
+        base_lat = 46.7712
+        base_lon = 23.6236
+        
+        if prediction['type'] == 'drone_from_direction':
+            sector = prediction.get('sector', 'N')
+            bearing = self._sector_to_bearing(sector)
+            predicted_range_km = 20.0  # Typical detection range
+            
+            # Calculate position using bearing and range
+            import math
+            R = 6371.0  # Earth radius in km
+            lat1 = math.radians(base_lat)
+            lon1 = math.radians(base_lon)
+            brng = math.radians(bearing)
+            
+            lat2 = math.asin(
+                math.sin(lat1) * math.cos(predicted_range_km / R) +
+                math.cos(lat1) * math.sin(predicted_range_km / R) * math.cos(brng)
+            )
+            
+            lon2 = lon1 + math.atan2(
+                math.sin(brng) * math.sin(predicted_range_km / R) * math.cos(lat1),
+                math.cos(predicted_range_km / R) - math.sin(lat1) * math.sin(lat2)
+            )
+            
+            return math.degrees(lat2), math.degrees(lon2)
+        
+        # Default return base location
+        return base_lat, base_lon
+        
+    def _sector_to_bearing(self, sector: str) -> float:
+        """Convert sector to bearing degrees"""
+        sector_map = {
+            'N': 0, 'NE': 45, 'E': 90, 'SE': 135,
+            'S': 180, 'SW': 225, 'W': 270, 'NW': 315
+        }
+        return sector_map.get(sector, 0)
         
     def get_recent_results(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Get recent prediction results"""
