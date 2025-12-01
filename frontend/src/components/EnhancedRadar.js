@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-export function EnhancedRadar({ colors, status, data, targets, predictions, showPredictions, onTargetClick, onPredictionClick }) {
+export function EnhancedRadar({ colors, status, data, targets, predictions, showPredictions, radarZoom, setRadarZoom, onTargetClick, onPredictionClick }) {
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
   const targetPositionsRef = useRef([]);
