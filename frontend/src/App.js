@@ -9,6 +9,7 @@ import { RadarSweep } from './components/RadarSweep';
 import { AIPredictionWidget } from './components/AIPrediction';
 import { DangerZoneMap, LocryptShareModal } from './components/LocryptShare';
 import { TargetDetailModal } from './components/TargetDetailModal';
+import { PredictionModal } from './components/PredictionModal';
 import '@/App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
