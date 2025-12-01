@@ -582,6 +582,9 @@ function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway,
         logs={logs}
         hasGateway={hasGateway}
         setSelectedTarget={setSelectedTarget}
+        setSelectedPrediction={setSelectedPrediction}
+        predictions={predictions}
+        showPredictions={showPredictions}
         colors={colors}
       />
     </div>
