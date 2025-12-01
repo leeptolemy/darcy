@@ -339,7 +339,6 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
   }, [colors, status, targets, predictions, showPredictions, validations]);
 
   const handleClick = (e) => {
-    if (!onTargetClick) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -347,11 +346,26 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
     const scaleY = canvas.height / rect.height;
     const clickX = (e.clientX - rect.left) * scaleX;
     const clickY = (e.clientY - rect.top) * scaleY;
-    for (const pos of targetPositionsRef.current) {
-      const dist = Math.sqrt(Math.pow(clickX - pos.x, 2) + Math.pow(clickY - pos.y, 2));
-      if (dist <= pos.radius) {
-        onTargetClick(pos.target);
-        return;
+    
+    // Check predictions first
+    if (onPredictionClick) {
+      for (const pos of predictionPositionsRef.current) {
+        const dist = Math.sqrt(Math.pow(clickX - pos.x, 2) + Math.pow(clickY - pos.y, 2));
+        if (dist <= pos.radius) {
+          onPredictionClick(pos.prediction);
+          return;
+        }
+      }
+    }
+    
+    // Then check targets
+    if (onTargetClick) {
+      for (const pos of targetPositionsRef.current) {
+        const dist = Math.sqrt(Math.pow(clickX - pos.x, 2) + Math.pow(clickY - pos.y, 2));
+        if (dist <= pos.radius) {
+          onTargetClick(pos.target);
+          return;
+        }
       }
     }
   };
