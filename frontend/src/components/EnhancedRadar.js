@@ -1,9 +1,50 @@
 import React, { useRef, useEffect } from 'react';
 
-export function EnhancedRadar({ colors, status, data, targets, onTargetClick }) {
+export function EnhancedRadar({ colors, status, data, targets, onTargetClick, showPredictions }) {
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
   const targetPositionsRef = useRef([]);
+  const [predictions, setPredictions] = useState([]);
+  const [validatedPredictions, setValidatedPredictions] = useState([]);
+
+  // Fetch predictions every 3 seconds
+  useEffect(() => {
+    const fetchPredictions = async () => {
+      try {
+        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+        const response = await fetch(`${BACKEND_URL}/api/predictions/active`);
+        const data = await response.json();
+        setPredictions(data.predictions || []);
+      } catch (e) {}
+    };
+    
+    fetchPredictions();
+    const interval = setInterval(fetchPredictions, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Check for validated predictions (for checkmark animation)
+  useEffect(() => {
+    predictions.forEach(pred => {
+      if (pred.seconds_remaining === 0 && pred.show_on_radar) {
+        // Check if real drone appeared at predicted location
+        const matchingTarget = targets.find(t => {
+          const bearingMatch = t.bearing?.match(/([\d.]+)/);
+          if (!bearingMatch) return false;
+          const targetBearing = parseFloat(bearingMatch[1]);
+          const predBearing = parseFloat(pred.bearing?.replace('°', '') || 0);
+          return Math.abs(targetBearing - predBearing) < 10; // Within 10 degrees
+        });
+        
+        if (matchingTarget && !validatedPredictions.find(v => v.id === pred.id)) {
+          setValidatedPredictions(prev => [...prev, { ...pred, targetId: matchingTarget.id, validatedAt: Date.now() }]);
+          setTimeout(() => {
+            setValidatedPredictions(prev => prev.filter(v => v.id !== pred.id));
+          }, 5000); // Remove after 5 seconds
+        }
+      }
+    });
+  }, [predictions, targets]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
