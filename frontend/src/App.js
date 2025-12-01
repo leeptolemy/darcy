@@ -193,10 +193,14 @@ function App() {
         />
       )}
 
-      {selectedTarget && (
-        <TargetDetailModal
-          target={selectedTarget}
-          onClose={() => setSelectedTarget(null)}
+      {selectedPrediction && (
+        <PredictionModal
+          prediction={selectedPrediction}
+          onClose={() => setSelectedPrediction(null)}
+          onShareToLocrypt={(pred) => {
+            setSelectedPrediction(null);
+            setShowLocryptShare(true);
+          }}
           colors={COLORS}
         />
       )}
