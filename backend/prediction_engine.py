@@ -45,9 +45,15 @@ class PredictionEngine:
                 # Validate prediction
                 was_correct = self._check_prediction_accuracy(prediction, current_data)
                 
+                # Calculate spatial accuracy if prediction was TRUE
+                spatial_accuracy = 0
+                if was_correct and prediction['type'] == 'drone_from_direction':
+                    spatial_accuracy = self._calculate_spatial_accuracy(prediction, current_data)
+                
                 # Move to history with result
                 prediction['result'] = was_correct
                 prediction['validated_at'] = now
+                prediction['spatial_accuracy'] = spatial_accuracy
                 self.prediction_history.append(prediction)
                 
                 # Remove from active predictions
