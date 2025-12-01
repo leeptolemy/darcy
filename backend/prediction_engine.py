@@ -290,14 +290,16 @@ class PredictionEngine:
         return sector_map.get(sector, 0)
         
     def get_recent_results(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get recent prediction results"""
+        """Get recent prediction results with accuracy details"""
         return [
             {
                 'id': pred['id'],
                 'message': pred['message'],
                 'result': pred['result'],
                 'confidence': pred['confidence'],
-                'validated_at': pred['validated_at'].isoformat()
+                'validated_at': pred['validated_at'].isoformat(),
+                'spatial_accuracy': pred.get('spatial_accuracy', 0),  # 0-100% match
+                'show_validation': pred['result'] == True  # Show green checkmark
             }
             for pred in list(self.prediction_history)[:limit]
         ]
