@@ -375,6 +375,11 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
       <canvas ref={canvasRef} width={800} height={800} style={{ width: '100%', cursor: 'pointer' }} onClick={handleClick} />
       {data && <div style={{ position: 'absolute', top: 16, left: 20, fontSize: 8, padding: 8, background: 'rgba(0, 0, 0, 0.85)', border: '1px solid ' + colors.teal, borderRadius: 3 }}><div style={{ color: colors.teal, fontWeight: 'bold', marginBottom: 4 }}>SCAN</div><div>RNG: {data.range}</div><div>BRG: {data.bearing}</div><div>TGT: {data.detections}</div><div>SIG: {data.signalStrength}%</div></div>}
       {targets.length > 0 && <div style={{ position: 'absolute', top: 16, right: 20, fontSize: 10, padding: 8, background: 'rgba(255, 51, 102, 0.3)', border: '2px solid ' + colors.error, borderRadius: 3, animation: 'pulse 2s infinite' }}><div style={{ color: colors.error, fontWeight: 'bold' }}>⚠ {targets.length} THREAT{targets.length > 1 ? 'S' : ''}</div></div>}
+      {showPredictions && predictions?.filter(p => p.show_on_radar && p.confidence >= 80).length > 0 && (
+        <div style={{ position: 'absolute', top: 60, right: 20, fontSize: 9, padding: 6, background: 'rgba(255, 215, 0, 0.2)', border: '1px solid #FFD700', borderRadius: 3 }}>
+          <div style={{ color: '#FFD700', fontWeight: 'bold' }}>🤖 {predictions.filter(p => p.show_on_radar && p.confidence >= 80).length} PREDICTION{predictions.filter(p => p.show_on_radar && p.confidence >= 80).length > 1 ? 'S' : ''}</div>
+        </div>
+      )}
     </div>
   );
 }
