@@ -7,44 +7,25 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
   const predictionPositionsRef = useRef([]);
   const [validations, setValidations] = useState([]);
 
-  // Fetch predictions every 3 seconds
+  // Check for validated predictions
   useEffect(() => {
-    const fetchPredictions = async () => {
-      try {
-        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-        const response = await fetch(`${BACKEND_URL}/api/predictions/active`);
-        const data = await response.json();
-        setPredictions(data.predictions || []);
-      } catch (e) {}
-    };
-    
-    fetchPredictions();
-    const interval = setInterval(fetchPredictions, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Check for validated predictions (for checkmark animation)
-  useEffect(() => {
+    if (!predictions || !targets) return;
     predictions.forEach(pred => {
-      if (pred.seconds_remaining === 0 && pred.show_on_radar) {
-        // Check if real drone appeared at predicted location
+      if (pred.seconds_remaining === 0 && pred.confidence >= 80) {
         const matchingTarget = targets.find(t => {
-          const bearingMatch = t.bearing?.match(/([\d.]+)/);
-          if (!bearingMatch) return false;
-          const targetBearing = parseFloat(bearingMatch[1]);
-          const predBearing = parseFloat(pred.bearing?.replace('°', '') || 0);
-          return Math.abs(targetBearing - predBearing) < 10; // Within 10 degrees
+          const bm = t.bearing?.match(/([\d.]+)/);
+          if (!bm) return false;
+          const tb = parseFloat(bm[1]);
+          const pb = parseFloat(pred.bearing?.replace('°', '') || 0);
+          return Math.abs(tb - pb) < 10;
         });
-        
-        if (matchingTarget && !validatedPredictions.find(v => v.id === pred.id)) {
-          setValidatedPredictions(prev => [...prev, { ...pred, targetId: matchingTarget.id, validatedAt: Date.now() }]);
-          setTimeout(() => {
-            setValidatedPredictions(prev => prev.filter(v => v.id !== pred.id));
-          }, 5000); // Remove after 5 seconds
+        if (matchingTarget && !validations.find(v => v.id === pred.id)) {
+          setValidations(prev => [...prev, { ...pred, validatedAt: Date.now() }]);
+          setTimeout(() => setValidations(prev => prev.filter(v => v.id !== pred.id)), 5000);
         }
       }
     });
-  }, [predictions, targets]);
+  }, [predictions, targets, validations]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
