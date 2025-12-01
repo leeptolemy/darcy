@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 export function EnhancedRadar({ colors, status, data, targets, onTargetClick, showPredictions }) {
   const canvasRef = useRef(null);
