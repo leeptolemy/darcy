@@ -108,6 +108,47 @@ class PredictionEngine:
             
         return False
         
+    def _calculate_spatial_accuracy(self, prediction: Dict, actual_data: Dict) -> float:
+        """Calculate how close prediction was to actual location (0-100%)"""
+        try:
+            if prediction['type'] != 'drone_from_direction':
+                return 0
+                
+            predicted_bearing = float(prediction.get('bearing', '0').replace('°', ''))
+            predicted_sector = self._get_sector_from_bearing(str(int(predicted_bearing)) + '°')
+            
+            # Find actual drone in predicted sector
+            for target in actual_data.get('targets', []):
+                target_bearing_str = target.get('bearing', '000°')
+                target_sector = self._get_sector_from_bearing(target_bearing_str)
+                
+                if target_sector == predicted_sector:
+                    # Calculate bearing accuracy
+                    actual_bearing = float(target_bearing_str.replace('°', ''))
+                    bearing_diff = abs(predicted_bearing - actual_bearing)
+                    if bearing_diff > 180:
+                        bearing_diff = 360 - bearing_diff
+                    bearing_accuracy = max(0, 100 - (bearing_diff / 45 * 100))  # 45° = sector width
+                    
+                    # Calculate range accuracy (predicted 20km)
+                    predicted_range = 20.0
+                    actual_range_str = target.get('range', '0km').replace('km', '')
+                    try:
+                        actual_range = float(actual_range_str)
+                        range_diff = abs(predicted_range - actual_range)
+                        range_accuracy = max(0, 100 - (range_diff / 10 * 100))  # Within 10km = 100%
+                    except:
+                        range_accuracy = 50
+                    
+                    # Combined accuracy (weighted: 70% bearing, 30% range)
+                    total_accuracy = (bearing_accuracy * 0.7) + (range_accuracy * 0.3)
+                    return round(total_accuracy, 1)
+            
+            return 0
+        except Exception as e:
+            logger.error(f"Error calculating spatial accuracy: {e}")
+            return 0
+        
     def _generate_predictions(self):
         """Generate predictions based on detected patterns"""
         if len(self.detection_history) < 10:
