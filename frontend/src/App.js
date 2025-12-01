@@ -757,6 +757,8 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
             targets={targets} 
             predictions={predictions}
             showPredictions={showPredictions}
+            radarZoom={radarZoom}
+            setRadarZoom={setRadarZoom}
             onTargetClick={setSelectedTarget}
             onPredictionClick={setSelectedPrediction}
           />
