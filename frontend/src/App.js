@@ -169,6 +169,8 @@ function App() {
         viewMode={viewMode}
         setViewMode={setViewMode}
         setShowLocryptShare={setShowLocryptShare}
+        showPredictions={showPredictions}
+        setShowPredictions={setShowPredictions}
         colors={COLORS} 
       />
 
