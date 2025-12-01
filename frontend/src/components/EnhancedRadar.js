@@ -109,6 +109,7 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
 
     const draw = () => {
       targetPositionsRef.current = [];
+      predictionPositionsRef.current = [];
       
       ctx.fillStyle = colors.surface;
       ctx.fillRect(0, 0, w, h);
