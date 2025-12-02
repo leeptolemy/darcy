@@ -423,6 +423,10 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
         <button onClick={() => setRadarZoom(5)} style={{ padding: '6px 10px', fontSize: 9, fontWeight: 'bold', background: radarZoom === 5 ? colors.teal : 'rgba(0, 217, 255, 0.2)', border: '1px solid ' + colors.teal, borderRadius: 3, color: radarZoom === 5 ? colors.primary : colors.teal, cursor: 'pointer' }}>5 KM</button>
         <button onClick={() => setRadarZoom(20)} style={{ padding: '6px 10px', fontSize: 9, fontWeight: 'bold', background: radarZoom === 20 ? colors.teal : 'rgba(0, 217, 255, 0.2)', border: '1px solid ' + colors.teal, borderRadius: 3, color: radarZoom === 20 ? colors.primary : colors.teal, cursor: 'pointer' }}>20 KM</button>
         <button onClick={() => setRadarZoom(50)} style={{ padding: '6px 10px', fontSize: 9, fontWeight: 'bold', background: radarZoom === 50 ? colors.teal : 'rgba(0, 217, 255, 0.2)', border: '1px solid ' + colors.teal, borderRadius: 3, color: radarZoom === 50 ? colors.primary : colors.teal, cursor: 'pointer' }}>50 KM</button>
+        <div style={{ width: 1, height: 30, background: colors.border, margin: '0 4px' }} />
+        <button onClick={() => setShowMapBackground(!showMapBackground)} style={{ padding: '6px 12px', fontSize: 9, fontWeight: 'bold', background: showMapBackground ? colors.warning : 'rgba(255, 185, 0, 0.2)', border: '1px solid ' + colors.warning, borderRadius: 3, color: showMapBackground ? colors.primary : colors.warning, cursor: 'pointer' }}>
+          MAP {showMapBackground ? 'ON' : 'OFF'}
+        </button>
       </div>
       {targets.length > 0 && <div style={{ position: 'absolute', top: 16, right: 20, fontSize: 10, padding: 8, background: 'rgba(255, 51, 102, 0.3)', border: '2px solid ' + colors.error, borderRadius: 3, animation: 'pulse 2s infinite' }}><div style={{ color: colors.error, fontWeight: 'bold' }}>⚠ {targets.length} THREAT{targets.length > 1 ? 'S' : ''}</div></div>}
       {showPredictions && predictions?.filter(p => p.show_on_radar && p.confidence >= 80).length > 0 && (
