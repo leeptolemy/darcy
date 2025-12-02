@@ -160,7 +160,7 @@ function App() {
   }, [data?.timestamp]);
 
   return (
-    <div style={{ background: COLORS.primary, color: COLORS.text, fontFamily: 'monospace', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ background: COLORS.primary, color: COLORS.text, fontFamily: 'monospace', height: '100vh', overflow: 'hidden' }} onContextMenu={(e) => e.preventDefault()}>
       <Header 
         status={status} 
         getStatusColor={getStatusColor} 
