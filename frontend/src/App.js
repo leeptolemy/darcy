@@ -562,7 +562,7 @@ function Sidebar({ activeView, setActiveView, setShowSetup, status, colors }) {
   );
 }
 
-function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, setSelectedTarget, setSelectedPrediction, predictions, showPredictions, radarZoom, setRadarZoom, colors }) {
+function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, setSelectedTarget, setSelectedPrediction, predictions, showPredictions, radarZoom, setRadarZoom, showMapBackground, setShowMapBackground, colors }) {
   return (
     <div style={{ padding: 8 }}>
       {!hasGateway && (
