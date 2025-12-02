@@ -809,7 +809,7 @@ function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway,
           <Panel title="TARGETS" colors={colors}>
             <TargetListPanel targets={targets} colors={colors} />
           </Panel>
-          <Panel title="CLUJ-NAPOCA MAP" colors={colors}>
+          <Panel title="MAP" colors={colors}>
             <ClujMap colors={colors} targets={targets} />
           </Panel>
           <Panel title="DANGER ZONES" colors={colors}>
