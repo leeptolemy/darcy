@@ -114,6 +114,49 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
       ctx.fillStyle = colors.surface;
       ctx.fillRect(0, 0, w, h);
 
+      // Draw Cluj-Napoca map background (if enabled)
+      if (showMapBackground) {
+        const mapScale = radarZoom / 50; // Scale map based on zoom level
+        const gridSize = 6 * mapScale;
+        
+        // Street grid
+        ctx.strokeStyle = 'rgba(0, 217, 255, 0.08)';
+        ctx.lineWidth = 0.8;
+        for (let i = 0; i <= gridSize; i++) {
+          ctx.beginPath();
+          ctx.moveTo((w / gridSize) * i, 0);
+          ctx.lineTo((w / gridSize) * i, h);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(0, (h / gridSize) * i);
+          ctx.lineTo(w, (h / gridSize) * i);
+          ctx.stroke();
+        }
+        
+        // River (scaled)
+        ctx.strokeStyle = 'rgba(0, 150, 255, 0.25)';
+        ctx.lineWidth = 3 * mapScale;
+        ctx.beginPath();
+        ctx.moveTo(w * 0.1, h * 0.35);
+        ctx.quadraticCurveTo(w * 0.3, h * 0.55, w * 0.5, h * 0.5);
+        ctx.quadraticCurveTo(w * 0.7, h * 0.45, w * 0.9, h * 0.55);
+        ctx.stroke();
+        
+        // Main streets
+        ctx.strokeStyle = 'rgba(0, 217, 255, 0.15)';
+        ctx.lineWidth = 1.5;
+        [0.25, 0.5, 0.75].forEach(ratio => {
+          ctx.beginPath();
+          ctx.moveTo(w * 0.15, h * ratio);
+          ctx.lineTo(w * 0.85, h * ratio);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(w * ratio, h * 0.15);
+          ctx.lineTo(w * ratio, h * 0.85);
+          ctx.stroke();
+        });
+      }
+
       // Fine background grid
       ctx.strokeStyle = 'rgba(0, 217, 255, 0.02)';
       ctx.lineWidth = 0.3;
