@@ -226,6 +226,8 @@ function App() {
                 targets={targets}
                 hasGateway={hasGateway}
                 setSelectedTarget={setSelectedTarget}
+                radarZoom={radarZoom}
+                setRadarZoom={setRadarZoom}
                 colors={COLORS}
               />
             ) : (
@@ -245,6 +247,8 @@ function App() {
                 setSelectedPrediction={setSelectedPrediction}
                 predictions={predictions}
                 showPredictions={showPredictions}
+                radarZoom={radarZoom}
+                setRadarZoom={setRadarZoom}
                 colors={COLORS}
               />
             )
