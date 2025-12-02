@@ -604,6 +604,8 @@ function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway,
         showPredictions={showPredictions}
         radarZoom={radarZoom}
         setRadarZoom={setRadarZoom}
+        showMapBackground={showMapBackground}
+        setShowMapBackground={setShowMapBackground}
         colors={colors}
       />
     </div>
