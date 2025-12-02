@@ -43,7 +43,8 @@ function App() {
   const [selectedTarget, setSelectedTarget] = useState(null);
   const [showPredictions, setShowPredictions] = useState(true);
   const [selectedPrediction, setSelectedPrediction] = useState(null);
-  const [radarZoom, setRadarZoom] = useState(50); // 50km, 20km, or 5km // 'standard' or 'easy'
+  const [radarZoom, setRadarZoom] = useState(50); // 50km, 20km, or 5km
+  const [showMapBackground, setShowMapBackground] = useState(false); // 'standard' or 'easy'
 
   useEffect(() => {
     fetchData();
