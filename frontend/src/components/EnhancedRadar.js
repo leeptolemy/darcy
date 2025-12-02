@@ -209,7 +209,6 @@ export function EnhancedRadar({ colors, status, data, targets, predictions, show
 
       // Draw yellow prediction ghosts (if enabled and confidence > 80%)
       if (showPredictions && predictions) {
-        const maxRange = radarZoom || 50;
         predictions.forEach(pred => {
           if (pred.show_on_radar && pred.confidence >= 80) {
             const bm = pred.bearing?.match(/([\d.]+)/);
