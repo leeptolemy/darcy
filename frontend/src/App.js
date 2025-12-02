@@ -589,6 +589,8 @@ function Dashboard({ status, loading, getStatusColor, startGateway, stopGateway,
         setSelectedPrediction={setSelectedPrediction}
         predictions={predictions}
         showPredictions={showPredictions}
+        radarZoom={radarZoom}
+        setRadarZoom={setRadarZoom}
         colors={colors}
       />
     </div>
