@@ -12,57 +12,81 @@ export function ClujMap({ colors, targets }) {
       ctx.fillStyle = colors.surface;
       ctx.fillRect(0, 0, w, h);
       
-      // Grid overlay
-      ctx.strokeStyle = 'rgba(0, 217, 255, 0.1)';
-      ctx.lineWidth = 0.5;
-      for (let i = 0; i <= 8; i++) {
-        ctx.beginPath(); ctx.moveTo((w / 8) * i, 0); ctx.lineTo((w / 8) * i, h); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(0, (h / 8) * i); ctx.lineTo(w, (h / 8) * i); ctx.stroke();
-      }
-      
-      // Cluj-Napoca street grid (simplified)
+      // Main coordinate grid
       ctx.strokeStyle = 'rgba(0, 217, 255, 0.15)';
       ctx.lineWidth = 1;
+      for (let i = 0; i <= 6; i++) {
+        ctx.beginPath(); ctx.moveTo((w / 6) * i, 0); ctx.lineTo((w / 6) * i, h); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, (h / 6) * i); ctx.lineTo(w, (h / 6) * i); ctx.stroke();
+      }
       
-      // Main streets (horizontal)
-      [0.3, 0.5, 0.7].forEach(ratio => {
-        ctx.beginPath();
-        ctx.moveTo(w * 0.2, h * ratio);
-        ctx.lineTo(w * 0.8, h * ratio);
-        ctx.stroke();
-      });
-      
-      // Main streets (vertical)
-      [0.3, 0.5, 0.7].forEach(ratio => {
-        ctx.beginPath();
-        ctx.moveTo(w * ratio, h * 0.2);
-        ctx.lineTo(w * ratio, h * 0.8);
-        ctx.stroke();
-      });
-      
-      // River Someș (curved line)
-      ctx.strokeStyle = 'rgba(0, 150, 255, 0.3)';
-      ctx.lineWidth = 3;
+      // River Someș (more prominent, curved)
+      ctx.strokeStyle = 'rgba(0, 150, 255, 0.4)';
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.moveTo(w * 0.1, h * 0.4);
-      ctx.quadraticCurveTo(w * 0.4, h * 0.6, w * 0.9, h * 0.5);
+      ctx.moveTo(w * 0.1, h * 0.35);
+      ctx.quadraticCurveTo(w * 0.3, h * 0.55, w * 0.5, h * 0.5);
+      ctx.quadraticCurveTo(w * 0.7, h * 0.45, w * 0.9, h * 0.55);
       ctx.stroke();
       
-      // Districts (subtle rectangles)
-      ctx.strokeStyle = 'rgba(0, 217, 255, 0.08)';
-      ctx.lineWidth = 1;
-      [[0.2, 0.2, 0.3, 0.3], [0.5, 0.2, 0.3, 0.3], [0.2, 0.5, 0.3, 0.3], [0.5, 0.5, 0.3, 0.3]].forEach(([rx, ry, rw, rh]) => {
-        ctx.strokeRect(w * rx, h * ry, w * rw, h * rh);
+      // Main roads/boulevards (more detailed)
+      ctx.strokeStyle = 'rgba(0, 217, 255, 0.25)';
+      ctx.lineWidth = 2;
+      
+      // Horizontal main streets
+      [0.25, 0.5, 0.75].forEach(ratio => {
+        ctx.beginPath();
+        ctx.moveTo(w * 0.15, h * ratio);
+        ctx.lineTo(w * 0.85, h * ratio);
+        ctx.stroke();
       });
       
-      // Labels
+      // Vertical main streets
+      [0.3, 0.5, 0.7].forEach(ratio => {
+        ctx.beginPath();
+        ctx.moveTo(w * ratio, h * 0.15);
+        ctx.lineTo(w * ratio, h * 0.85);
+        ctx.stroke();
+      });
+      
+      // Secondary streets (lighter)
+      ctx.strokeStyle = 'rgba(0, 217, 255, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0.2; i < 0.9; i += 0.1) {
+        ctx.beginPath();
+        ctx.moveTo(w * 0.15, h * i);
+        ctx.lineTo(w * 0.85, h * i);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(w * i, h * 0.15);
+        ctx.lineTo(w * i, h * 0.85);
+        ctx.stroke();
+      }
+      
+      // District boundaries
+      ctx.strokeStyle = 'rgba(0, 217, 255, 0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      [[0.2, 0.15, 0.25, 0.35], [0.5, 0.15, 0.3, 0.35], [0.2, 0.55, 0.25, 0.3], [0.5, 0.55, 0.3, 0.3]].forEach(([x, y, w, h]) => {
+        ctx.strokeRect(cv.width * x, cv.height * y, cv.width * w, cv.height * h);
+      });
+      ctx.setLineDash([]);
+      
+      // Landmarks (simplified buildings)
+      ctx.fillStyle = 'rgba(0, 217, 255, 0.15)';
+      [[0.48, 0.48, 0.04, 0.04], [0.35, 0.3, 0.03, 0.03], [0.65, 0.7, 0.03, 0.03]].forEach(([x, y, bw, bh]) => {
+        ctx.fillRect(w * x, h * y, w * bw, h * bh);
+      });
+      
+      // District labels
       ctx.fillStyle = colors.textMuted;
       ctx.font = '7px monospace';
       ctx.fillText('CENTRU', w * 0.48, h * 0.48);
       ctx.fillText('MANASTUR', w * 0.25, h * 0.25);
       ctx.fillText('GHEORGHENI', w * 0.65, h * 0.25);
+      ctx.fillText('GRIGORESCU', w * 0.3, h * 0.68);
       
-      // Base (Cluj-Napoca center)
+      // BASE marker (Cluj-Napoca center)
       ctx.fillStyle = colors.success;
       ctx.shadowBlur = 15;
       ctx.shadowColor = colors.success;
@@ -77,14 +101,17 @@ export function ClujMap({ colors, targets }) {
       ctx.shadowBlur = 0;
       
       ctx.fillStyle = colors.success;
-      ctx.font = 'bold 9px monospace';
-      ctx.fillText('CLUJ-NAPOCA', cx + 20, cy + 4);
+      ctx.font = 'bold 8px monospace';
+      ctx.fillText('CLUJ-NAPOCA', cx + 18, cy + 3);
+      ctx.font = '6px monospace';
+      ctx.fillStyle = colors.textMuted;
+      ctx.fillText('46.7712°N 23.6236°E', cx + 18, cy + 12);
       
-      // Targets on map
+      // Targets on map (accurate GPS positioning)
       targets.forEach((t, idx) => {
         if (t.latitude && t.longitude) {
-          const latDiff = (parseFloat(t.latitude) - 46.7712) * 600;
-          const lonDiff = (parseFloat(t.longitude) - 23.6236) * 600;
+          const latDiff = (parseFloat(t.latitude) - 46.7712) * 800;
+          const lonDiff = (parseFloat(t.longitude) - 23.6236) * 800;
           const x = cx + lonDiff;
           const y = cy - latDiff;
           
@@ -108,8 +135,8 @@ export function ClujMap({ colors, targets }) {
             ctx.stroke();
             
             ctx.fillStyle = colors.error;
-            ctx.font = 'bold 8px monospace';
-            ctx.fillText(t.id || `T${idx}`, x + 12, y - 4);
+            ctx.font = 'bold 7px monospace';
+            ctx.fillText(t.id || `T${idx}`, x + 10, y - 3);
           }
         }
       });
