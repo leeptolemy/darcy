@@ -196,6 +196,14 @@ function App() {
         />
       )}
 
+      {selectedTarget && (
+        <TargetDetailModal
+          target={selectedTarget}
+          onClose={() => setSelectedTarget(null)}
+          colors={COLORS}
+        />
+      )}
+
       {selectedPrediction && (
         <PredictionModal
           prediction={selectedPrediction}
