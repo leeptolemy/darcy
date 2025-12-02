@@ -258,6 +258,8 @@ function App() {
                 showPredictions={showPredictions}
                 radarZoom={radarZoom}
                 setRadarZoom={setRadarZoom}
+                showMapBackground={showMapBackground}
+                setShowMapBackground={setShowMapBackground}
                 colors={COLORS}
               />
             )
