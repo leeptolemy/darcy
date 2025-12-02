@@ -688,7 +688,7 @@ function EasyModeDashboard({ status, loading, getStatusColor, getStatusText, sta
   );
 }
 
-function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, setSelectedTarget, setSelectedPrediction, predictions, showPredictions, colors }) {
+function DenseGrid({ status, loading, getStatusColor, startGateway, stopGateway, manualPublish, data, targets, events, logs, hasGateway, setSelectedTarget, setSelectedPrediction, predictions, showPredictions, radarZoom, setRadarZoom, colors }) {
   const threatLevel = targets.length === 0 ? 'CLEAR' : targets.length < 2 ? 'GUARDED' : targets.length < 4 ? 'ELEVATED' : 'HIGH';
   const threatColor = threatLevel === 'CLEAR' ? colors.success : threatLevel === 'GUARDED' ? colors.teal : threatLevel === 'ELEVATED' ? colors.warning : colors.error;
 
